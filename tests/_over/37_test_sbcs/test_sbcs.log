@@ -1,0 +1,70 @@
+Logging to test_sbcs.log
+arm-vm version 0.0.125
+[DEBUG] debug_flags set to 0x000003FF
+[LOAD] test_sbcs.bin @ 0x00008000 (60 bytes)
+r15 <= 0x00008000
+00008000:       E328F000        .word 0xE328F000
+[TRACE] PC=0x00008000 Instr=0xE328F000
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] TEQ match (key=0x320)
+00008004:       E3A00000        mov r0, #0x0
+[TRACE] PC=0x00008004 Instr=0xE3A00000
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008008:       E3A01000        mov r1, #0x0
+[TRACE] PC=0x00008008 Instr=0xE3A01000
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+0000800C:       E0D02001        .word 0xE0D02001
+[TRACE] PC=0x0000800C Instr=0xE0D02001
+[K12] key=0x0D0 op1=0 op2=13 op3=0
+[K12] SBC match (key=0x0D0)
+00008010:       E10FA000        .word 0xE10FA000
+[TRACE] PC=0x00008010 Instr=0xE10FA000
+[K12] key=0x100 op1=0 op2=16 op3=0
+[K12] MRS match (key=0x100)
+[MRS] r10 = CPSR (0x80000000)
+00008014:       E20AA20F        and r10, r10, #0xF0000000
+[TRACE] PC=0x00008014 Instr=0xE20AA20F
+[K12] key=0x200 op1=1 op2=0 op3=0
+[K12] AND (imm) match (key=0x200)
+[AND imm] r10 = r10 (0x80000000) & 0xF0000000 => 0x80000000
+00008018:       E3899202        orr r9, r9, #0x20000000
+[TRACE] PC=0x00008018 Instr=0xE3899202
+[K12] key=0x380 op1=1 op2=24 op3=0
+[K12] ORR (imm) match (key=0x380)
+0000801C:       E128F009        .word 0xE128F009
+[TRACE] PC=0x0000801C Instr=0xE128F009
+[K12] key=0x120 op1=0 op2=18 op3=0
+[K12] TEQ match (key=0x120)
+00008020:       E3A03102        mov r3, #0x80000000
+[TRACE] PC=0x00008020 Instr=0xE3A03102
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008024:       E3A04001        mov r4, #0x1
+[TRACE] PC=0x00008024 Instr=0xE3A04001
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008028:       E0D35004        .word 0xE0D35004
+[TRACE] PC=0x00008028 Instr=0xE0D35004
+[K12] key=0x0D0 op1=0 op2=13 op3=0
+[K12] SBC match (key=0x0D0)
+0000802C:       E10FB000        .word 0xE10FB000
+[TRACE] PC=0x0000802C Instr=0xE10FB000
+[K12] key=0x100 op1=0 op2=16 op3=0
+[K12] MRS match (key=0x100)
+[MRS] r11 = CPSR (0x30000000)
+00008030:       E20BB20F        and r11, r11, #0xF0000000
+[TRACE] PC=0x00008030 Instr=0xE20BB20F
+[K12] key=0x200 op1=1 op2=0 op3=0
+[K12] AND (imm) match (key=0x200)
+[AND imm] r11 = r11 (0x30000000) & 0xF0000000 => 0x30000000
+00008034:       E1A00000        .word 0xE1A00000
+[TRACE] PC=0x00008034 Instr=0xE1A00000
+[K12] key=0x1A0 op1=0 op2=26 op3=0
+[K12] MOV match (key=0x1A0)
+00008038:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008038 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+[HALT] DEADBEEF.  Halting VM.

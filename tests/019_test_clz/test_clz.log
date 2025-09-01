@@ -1,0 +1,132 @@
+Logging to test_clz.log
+arm-vm version 0.0.129
+[LOAD] test_clz.bin @ 0x00008000 (116 bytes)
+r15 <= 0x00008000
+00008000:       E3006000        movw r6, #0x0000
+[TRACE] PC=0x00008000 Instr=0xE3006000
+[K12] key=0x300 op1=1 op2=16 op3=0
+[K12] MOVW match (key=0x300)
+00008004:       E3406010        movt r6, #0x0010
+[TRACE] PC=0x00008004 Instr=0xE3406010
+[K12] key=0x341 op1=1 op2=20 op3=1
+[K12] MOVT match (key=0x341)
+00008008:       E10FC000        .word 0xE10FC000
+[TRACE] PC=0x00008008 Instr=0xE10FC000
+[K12] key=0x100 op1=0 op2=16 op3=0
+[K12] MRS match (key=0x100)
+0000800C:       E3A01000        mov r1, #0x0
+[TRACE] PC=0x0000800C Instr=0xE3A01000
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008010:       E16F0F11        .word 0xE16F0F11
+[TRACE] PC=0x00008010 Instr=0xE16F0F11
+[K12] key=0x161 op1=0 op2=22 op3=1
+[K12] CLZ match (key=0x161)
+00008014:       E5860000        str r0, [r6, #+0]
+[TRACE] PC=0x00008014 Instr=0xE5860000
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x00100000] <= r0 (0x00000020)
+00008018:       E3A01001        mov r1, #0x1
+[TRACE] PC=0x00008018 Instr=0xE3A01001
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+0000801C:       E16F0F11        .word 0xE16F0F11
+[TRACE] PC=0x0000801C Instr=0xE16F0F11
+[K12] key=0x161 op1=0 op2=22 op3=1
+[K12] CLZ match (key=0x161)
+00008020:       E5860004        str r0, [r6, #+4]
+[TRACE] PC=0x00008020 Instr=0xE5860004
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x00100004] <= r0 (0x0000001F)
+00008024:       E3001000        movw r1, #0x0000
+[TRACE] PC=0x00008024 Instr=0xE3001000
+[K12] key=0x300 op1=1 op2=16 op3=0
+[K12] MOVW match (key=0x300)
+00008028:       E3481000        movt r1, #0x8000
+[TRACE] PC=0x00008028 Instr=0xE3481000
+[K12] key=0x340 op1=1 op2=20 op3=0
+[K12] MOVT match (key=0x340)
+0000802C:       E16F0F11        .word 0xE16F0F11
+[TRACE] PC=0x0000802C Instr=0xE16F0F11
+[K12] key=0x161 op1=0 op2=22 op3=1
+[K12] CLZ match (key=0x161)
+00008030:       E5860008        str r0, [r6, #+8]
+[TRACE] PC=0x00008030 Instr=0xE5860008
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x00100008] <= r0 (0x00000000)
+00008034:       E3001000        movw r1, #0x0000
+[TRACE] PC=0x00008034 Instr=0xE3001000
+[K12] key=0x300 op1=1 op2=16 op3=0
+[K12] MOVW match (key=0x300)
+00008038:       E34010F0        movt r1, #0x00F0
+[TRACE] PC=0x00008038 Instr=0xE34010F0
+[K12] key=0x34F op1=1 op2=20 op3=15
+[K12] MOVT match (key=0x34F)
+0000803C:       E16F0F11        .word 0xE16F0F11
+[TRACE] PC=0x0000803C Instr=0xE16F0F11
+[K12] key=0x161 op1=0 op2=22 op3=1
+[K12] CLZ match (key=0x161)
+00008040:       E586000C        str r0, [r6, #+12]
+[TRACE] PC=0x00008040 Instr=0xE586000C
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x0010000C] <= r0 (0x00000008)
+00008044:       E3081000        movw r1, #0x8000
+[TRACE] PC=0x00008044 Instr=0xE3081000
+[K12] key=0x300 op1=1 op2=16 op3=0
+[K12] MOVW match (key=0x300)
+00008048:       E3401000        movt r1, #0x0000
+[TRACE] PC=0x00008048 Instr=0xE3401000
+[K12] key=0x340 op1=1 op2=20 op3=0
+[K12] MOVT match (key=0x340)
+0000804C:       E16F0F11        .word 0xE16F0F11
+[TRACE] PC=0x0000804C Instr=0xE16F0F11
+[K12] key=0x161 op1=0 op2=22 op3=1
+[K12] CLZ match (key=0x161)
+00008050:       E5860010        str r0, [r6, #+16]
+[TRACE] PC=0x00008050 Instr=0xE5860010
+[K12] key=0x581 op1=2 op2=24 op3=1
+[K12] STR  pre-imm match (key=0x581)
+[STR pre-inc imm] mem[0x00100010] <= r0 (0x00000010)
+00008054:       E3051678        movw r1, #0x5678
+[TRACE] PC=0x00008054 Instr=0xE3051678
+[K12] key=0x307 op1=1 op2=16 op3=7
+[K12] MOVW match (key=0x307)
+00008058:       E3411234        movt r1, #0x1234
+[TRACE] PC=0x00008058 Instr=0xE3411234
+[K12] key=0x343 op1=1 op2=20 op3=3
+[K12] MOVT match (key=0x343)
+0000805C:       E16F0F11        .word 0xE16F0F11
+[TRACE] PC=0x0000805C Instr=0xE16F0F11
+[K12] key=0x161 op1=0 op2=22 op3=1
+[K12] CLZ match (key=0x161)
+00008060:       E5860014        str r0, [r6, #+20]
+[TRACE] PC=0x00008060 Instr=0xE5860014
+[K12] key=0x581 op1=2 op2=24 op3=1
+[K12] STR  pre-imm match (key=0x581)
+[STR pre-inc imm] mem[0x00100014] <= r0 (0x00000003)
+00008064:       E10FB000        .word 0xE10FB000
+[TRACE] PC=0x00008064 Instr=0xE10FB000
+[K12] key=0x100 op1=0 op2=16 op3=0
+[K12] MRS match (key=0x100)
+00008068:       E02CA00B        .word 0xE02CA00B
+[TRACE] PC=0x00008068 Instr=0xE02CA00B
+[K12] key=0x020 op1=0 op2=2 op3=0
+[K12] EOR match (key=0x020)
+0000806C:       E586A018        str r10, [r6, #+24]
+[TRACE] PC=0x0000806C Instr=0xE586A018
+[K12] key=0x581 op1=2 op2=24 op3=1
+[K12] STR  pre-imm match (key=0x581)
+[STR pre-inc imm] mem[0x00100018] <= r10 (0x00000000)
+00008070:       E1212374        .word 0xE1212374
+[TRACE] PC=0x00008070 Instr=0xE1212374
+[K12] key=0x127 op1=0 op2=18 op3=7
+[K12] BKPT match (key=0x127)
+r0  = 0x00000003  r1  = 0x12345678  r2  = 0x00000000  r3  = 0x00000000
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00100000  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x00008070
+CPSR = 0x00000000  cycle=29

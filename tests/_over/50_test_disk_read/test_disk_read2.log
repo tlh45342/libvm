@@ -1,0 +1,4 @@
+Logging to test_disk_read2.log
+[DISK] disk0 attached at 0x0B000000 (1474560 bytes)
+Failed to open 'test_disk_read2.bin': No such file or directory
+Failed to open 'test_disk_read2.bin': No such file or directory

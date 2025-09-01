@@ -1,0 +1,22 @@
+>> load test_stack_bllr.bin 0x8000
+>> set cpu debug=all
+>> set r15 0x8000
+>> run
+[Cycle 00000000] PC=0x00008000 Instr=0xE59F0024
+  [LDR literal] r0 = mem[0x0000802c]
+[Cycle 00000001] PC=0x00008004 Instr=0xE3A0D502
+  [MOV imm] r13 = 0x00800000
+[Cycle 00000002] PC=0x00008008 Instr=0xE080D00D
+  [ADD reg] r13 = r0 + r13 => 0x0080802C
+[Cycle 00000003] PC=0x0000800C Instr=0xE3A00042
+  [MOV imm] r0 = 0x00000042
+[Cycle 00000004] PC=0x00008010 Instr=0xE2801001
+  [ADD] r1 = r0 + 0x1 => 0x00000043
+[Cycle 00000005] PC=0x00008014 Instr=0xEB000000
+[Cycle 00000006] PC=0x00008020 Instr=0xE2811001
+  [ADD] r1 = r1 + 0x1 => 0x00000044
+[Cycle 00000007] PC=0x00008024 Instr=0xE8BD0003
+[Cycle 00000008] PC=0x00008028 Instr=0xE12FFF1E
+  [BX] Branch to 0x00008018 (r14)
+[Cycle 00000009] PC=0x00008018 Instr=0xDEADBEEF
+  [HALT] Reached DEADBEEF sentinel. Halting VM.

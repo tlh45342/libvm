@@ -1,0 +1,50 @@
+Logging to putchars_uart_c.log
+[DEBUG] debug_flags set to 0xFFFFFFFF
+[LOAD] cmd_load reached.
+[LOAD] putchars_uart_c.bin @ 0x00008000 (110 bytes)
+[LOAD] putchars_uart_c.bin @ 0x00008000
+Set r15 = 0x00008000
+[TRACE] PC=0x00008000 Instr=0xE3080060
+[K12] key=0x306 op1=1 op2=16 op3=6
+[K12] TST match (key=0x306)
+[TRACE] PC=0x00008004 Instr=0xE3A01048
+[K12] key=0x3A4 op1=1 op2=26 op3=4
+[K12] MOV(imm) match (key=0x3A4)
+[TRACE] PC=0x00008008 Instr=0xE3A02409
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV(imm) match (key=0x3A0)
+[TRACE] PC=0x0000800C Instr=0xE3400000
+[K12] key=0x340 op1=1 op2=20 op3=0
+[K12] CMP match (key=0x340)
+[TRACE] PC=0x00008010 Instr=0xE3A0C00D
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV(imm) match (key=0x3A0)
+[TRACE] PC=0x00008014 Instr=0xE5923018
+[K12] key=0x591 op1=2 op2=25 op3=1
+[K12] LDR  pre-imm match (key=0x591)
+[LDR pre-inc imm] r3 = mem[0x09000018] => 0x00000010
+[TRACE] PC=0x00008018 Instr=0xE3130020
+[K12] key=0x312 op1=1 op2=17 op3=2
+[K12] TST match (key=0x312)
+[TRACE] PC=0x0000801C Instr=0x1AFFFFFC
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B cond fail (0x1)
+[TRACE] PC=0x00008020 Instr=0xE5821000
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x09000000] <= r1 (0x00000048)
+[TRACE] PC=0x00008024 Instr=0xE5F01001
+[K12] key=0x5F0 op1=2 op2=31 op3=0
+[K12] LDRB pre-imm match (key=0x5F0)
+[LDRB pre-inc! imm] r1 = mem8[0x00000001] => 0x00
+[TRACE] PC=0x00008028 Instr=0xE3510000
+[K12] key=0x350 op1=1 op2=21 op3=0
+[K12] CMP match (key=0x350)
+[TRACE] PC=0x0000802C Instr=0x0A000006
+[K12] key=0xA00 op1=5 op2=0 op3=0
+[K12] B match (key=0xA00)
+[B] A=0x0000802C base=0x00008034 off=24 -> target=0x0000804C
+[TRACE] PC=0x0000804C Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+[HALT] DEADBEEF.  Halting VM.

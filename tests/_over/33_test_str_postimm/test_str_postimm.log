@@ -1,0 +1,43 @@
+Logging to test_str_postimm.log
+[LOAD] test_str_postimm.bin @ 0x00008000 (36 bytes)
+[DEBUG] debug_flags set to 0x000003FF
+00008000:       E30B0EEF        tst r11, #0xEF0
+[TRACE] PC=0x00008000 Instr=0xE30B0EEF
+[K12] key=0x30E op1=1 op2=16 op3=14
+[K12] MOVW match (key=0x30E)
+00008004:       E34D0EAD        cmp r13, #0xAD0
+[TRACE] PC=0x00008004 Instr=0xE34D0EAD
+[K12] key=0x34A op1=1 op2=20 op3=10
+[K12] MOVT match (key=0x34A)
+00008008:       E3082090        tst r8, #0x90
+[TRACE] PC=0x00008008 Instr=0xE3082090
+[K12] key=0x309 op1=1 op2=16 op3=9
+[K12] MOVW match (key=0x309)
+0000800C:       E3402000        cmp r0, #0x0
+[TRACE] PC=0x0000800C Instr=0xE3402000
+[K12] key=0x340 op1=1 op2=20 op3=0
+[K12] MOVT match (key=0x340)
+00008010:       E4820004        str r0, [r2], #4
+[TRACE] PC=0x00008010 Instr=0xE4820004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00008090] <= r0 (0xDEADBEEF); r2 += 0x4
+00008014:       E30B1ABE        tst r11, #0xBE000
+[TRACE] PC=0x00008014 Instr=0xE30B1ABE
+[K12] key=0x30B op1=1 op2=16 op3=11
+[K12] MOVW match (key=0x30B)
+00008018:       E34C1AFE        cmp r12, #0xFE000
+[TRACE] PC=0x00008018 Instr=0xE34C1AFE
+[K12] key=0x34F op1=1 op2=20 op3=15
+[K12] MOVT match (key=0x34F)
+0000801C:       E4821004        str r1, [r2], #4
+[TRACE] PC=0x0000801C Instr=0xE4821004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00008094] <= r1 (0xCAFEBABE); r2 += 0x4
+00008020:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008020 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+[HALT] DEADBEEF.  Halting VM.
+[ERROR] Unknown command: E

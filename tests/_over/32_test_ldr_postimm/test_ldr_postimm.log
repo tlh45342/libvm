@@ -1,0 +1,28 @@
+Logging to test_ldr_postimm.log
+[LOAD] test_ldr_postimm.bin @ 0x00008000 (28 bytes)
+[DEBUG] debug_flags set to 0x000003FF
+00008000:       E59F1010        ldr r1, [pc, #16]
+[TRACE] PC=0x00008000 Instr=0xE59F1010
+[K12] key=0x591 op1=2 op2=25 op3=1
+[K12] LDR(literal) match (key=0x591)
+[LDR lit] r1 <= [0x00008018] => 0x00008010
+00008004:       E4912004        ldr r2, [r1], #4
+[TRACE] PC=0x00008004 Instr=0xE4912004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r2 = mem[0x00008010] => 0x12345678; r1 += 0x4 => 0x00008014
+00008008:       E4913004        ldr r3, [r1], #4
+[TRACE] PC=0x00008008 Instr=0xE4913004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x00008014] => 0x9ABCDEF0; r1 += 0x4 => 0x00008018
+0000800C:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x0000800C Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+[HALT] DEADBEEF.  Halting VM.
+r0  = 0x00000000  r1  = 0x00008018  r2  = 0x12345678  r3  = 0x9ABCDEF0
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00000000  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x0000800C
+CPSR = 0x00000000  cycle=4

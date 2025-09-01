@@ -1,0 +1,395 @@
+Logging to test_svc.log
+[DEBUG] debug_flags set to 0x000003FF
+arm-vm version 0.0.129
+[LOAD] test_svc.bin @ 0x00008000 (172 bytes)
+r15 <= 0x00008000
+0x00100000: 00 00 00 00
+00008000:       E59FF018        ldr r15, [pc, #+24]
+[TRACE] PC=0x00008000 Instr=0xE59FF018
+[K12] key=0x591 op1=2 op2=25 op3=1
+[K12] LDR(literal) match (key=0x591)
+[LDR lit] pc <= [0x00008020] => 0x00008040 (npc)
+00008040:       E59F0058        ldr r0, [pc, #+88]
+[TRACE] PC=0x00008040 Instr=0xE59F0058
+[K12] key=0x595 op1=2 op2=25 op3=5
+[K12] LDR(literal) match (key=0x595)
+[LDR lit] r0 <= [0x000080A0] => 0x00008000
+00008044:       E3A01000        mov r1, #0x0
+[TRACE] PC=0x00008044 Instr=0xE3A01000
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008048:       E3A02040        mov r2, #0x40
+[TRACE] PC=0x00008048 Instr=0xE3A02040
+[K12] key=0x3A4 op1=1 op2=26 op3=4
+[K12] MOV (imm) match (key=0x3A4)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x00008000] => 0xE59FF018; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00000000] <= r3 (0xE59FF018); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x00008004] => 0xE59FF018; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00000004] <= r3 (0xE59FF018); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x00008008] => 0xE59FF018; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00000008] <= r3 (0xE59FF018); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x0000800C] => 0xE59FF018; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x0000000C] <= r3 (0xE59FF018); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x00008010] => 0xE59FF018; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00000010] <= r3 (0xE59FF018); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x00008014] => 0xE59FF018; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00000014] <= r3 (0xE59FF018); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x00008018] => 0xE59FF018; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00000018] <= r3 (0xE59FF018); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x0000801C] => 0xE59FF018; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x0000001C] <= r3 (0xE59FF018); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x00008020] => 0x00008040; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00000020] <= r3 (0x00008040); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x00008024] => 0x00008084; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00000024] <= r3 (0x00008084); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x00008028] => 0x00008088; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00000028] <= r3 (0x00008088); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x0000802C] => 0x00008084; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x0000002C] <= r3 (0x00008084); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x00008030] => 0x00008084; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00000030] <= r3 (0x00008084); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x00008034] => 0x00008084; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00000034] <= r3 (0x00008084); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x00008038] => 0x00008084; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x00000038] <= r3 (0x00008084); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B match (key=0xAFF)
+0000804C:       E4903004        ldr r3, [r0], #+4
+[TRACE] PC=0x0000804C Instr=0xE4903004
+[K12] key=0x490 op1=2 op2=9 op3=0
+[K12] LDR (post,imm) match (key=0x490)
+[LDR post-imm] r3 = mem[0x0000803C] => 0x00008084; r0 += 0x4
+00008050:       E4813004        str r3, [r1], #+4
+[TRACE] PC=0x00008050 Instr=0xE4813004
+[K12] key=0x480 op1=2 op2=8 op3=0
+[K12] STR (post,imm) match (key=0x480)
+  [STR post-imm] mem[0x0000003C] <= r3 (0x00008084); r1 += 0x4
+00008054:       E2522004        subs r2, r2, #0x4
+[TRACE] PC=0x00008054 Instr=0xE2522004
+[K12] key=0x250 op1=1 op2=5 op3=0
+[K12] SUB match (key=0x250)
+00008058:       1AFFFFFB        b 0x0000804C
+[TRACE] PC=0x00008058 Instr=0x1AFFFFFB
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B cond fail (0x1)
+0000805C:       F57FF04F        dsb sy
+[TRACE] PC=0x0000805C Instr=0xF57FF04F
+[K12] key=0x574 op1=2 op2=23 op3=4
+[K12] DSB match (key=0x574)
+00008060:       F57FF06F        isb sy
+[TRACE] PC=0x00008060 Instr=0xF57FF06F
+[K12] key=0x576 op1=2 op2=23 op3=6
+[K12] ISB match (key=0x576)
+00008064:       E3A00601        mov r0, #0x100000
+[TRACE] PC=0x00008064 Instr=0xE3A00601
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008068:       E3A01000        mov r1, #0x0
+[TRACE] PC=0x00008068 Instr=0xE3A01000
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+0000806C:       E5801000        str r1, [r0, #+0]
+[TRACE] PC=0x0000806C Instr=0xE5801000
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x00100000] <= r1 (0x00000000)
+00008070:       EF000042        .word 0xEF000042
+[TRACE] PC=0x00008070 Instr=0xEF000042
+[K12] key=0xF04 op1=7 op2=16 op3=4
+[K12] SVC match (key=0xF04)
+00000008:       E59FF018        ldr r15, [pc, #+24]
+[TRACE] PC=0x00000008 Instr=0xE59FF018
+[K12] key=0x591 op1=2 op2=25 op3=1
+[K12] LDR(literal) match (key=0x591)
+[LDR lit] pc <= [0x00000028] => 0x00008088 (npc)
+00008088:       E24E0004        sub r0, r14, #0x4
+[TRACE] PC=0x00008088 Instr=0xE24E0004
+[K12] key=0x240 op1=1 op2=4 op3=0
+[K12] SUB match (key=0x240)
+0000808C:       E5901000        ldr r1, [r0, #+0]
+[TRACE] PC=0x0000808C Instr=0xE5901000
+[K12] key=0x590 op1=2 op2=25 op3=0
+[K12] LDR  pre-imm match (key=0x590)
+[LDR pre-inc imm] r1 = mem[0x00008070] => 0xEF000042
+00008090:       E3A02601        mov r2, #0x100000
+[TRACE] PC=0x00008090 Instr=0xE3A02601
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008094:       E59F300C        ldr r3, [pc, #+12]
+[TRACE] PC=0x00008094 Instr=0xE59F300C
+[K12] key=0x590 op1=2 op2=25 op3=0
+[K12] LDR(literal) match (key=0x590)
+[LDR lit] r3 <= [0x000080A8] => 0xDEADBEEF
+00008098:       E5823000        str r3, [r2, #+0]
+[TRACE] PC=0x00008098 Instr=0xE5823000
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x00100000] <= r3 (0xDEADBEEF)
+0000809C:       E1B0F00E        .word 0xE1B0F00E
+[TRACE] PC=0x0000809C Instr=0xE1B0F00E
+[K12] key=0x1B0 op1=0 op2=27 op3=0
+[K12] MOV match (key=0x1B0)
+00008074:       E3A00601        mov r0, #0x100000
+[TRACE] PC=0x00008074 Instr=0xE3A00601
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008078:       E59F1024        ldr r1, [pc, #+36]
+[TRACE] PC=0x00008078 Instr=0xE59F1024
+[K12] key=0x592 op1=2 op2=25 op3=2
+[K12] LDR(literal) match (key=0x592)
+[LDR lit] r1 <= [0x000080A4] => 0x12345678
+0000807C:       E5801000        str r1, [r0, #+0]
+[TRACE] PC=0x0000807C Instr=0xE5801000
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x00100000] <= r1 (0x12345678)
+00008080:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008080 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+0x00100000: 78 56 34 12
+00008080:       DEADBEEF        .word 0xDEADBEEF
+0x00100000: 78 56 34 12
+r0  = 0x00100000  r1  = 0x12345678  r2  = 0x00100000  r3  = 0xDEADBEEF
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00000000  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00008074  r15 = 0x00008080
+CPSR = 0x60000000  cycle=86

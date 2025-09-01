@@ -1,0 +1,84 @@
+Logging to test_bfc.log
+arm-vm version 0.0.129
+[LOAD] test_bfc.bin @ 0x00008000 (76 bytes)
+r15 <= 0x00008000
+00008000:       E3006000        movw r6, #0x0000
+[TRACE] PC=0x00008000 Instr=0xE3006000
+[K12] key=0x300 op1=1 op2=16 op3=0
+[K12] MOVW match (key=0x300)
+00008004:       E3406010        movt r6, #0x0010
+[TRACE] PC=0x00008004 Instr=0xE3406010
+[K12] key=0x341 op1=1 op2=20 op3=1
+[K12] MOVT match (key=0x341)
+00008008:       E3050678        movw r0, #0x5678
+[TRACE] PC=0x00008008 Instr=0xE3050678
+[K12] key=0x307 op1=1 op2=16 op3=7
+[K12] MOVW match (key=0x307)
+0000800C:       E3410234        movt r0, #0x1234
+[TRACE] PC=0x0000800C Instr=0xE3410234
+[K12] key=0x343 op1=1 op2=20 op3=3
+[K12] MOVT match (key=0x343)
+00008010:       E7DF001F        .word 0xE7DF001F
+[TRACE] PC=0x00008010 Instr=0xE7DF001F
+[K12] key=0x7D1 op1=3 op2=29 op3=1
+[K12] BFC match (key=0x7D1)
+00008014:       E5860000        str r0, [r6, #+0]
+[TRACE] PC=0x00008014 Instr=0xE5860000
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x00100000] <= r0 (0x00000000)
+00008018:       E30A1BCD        movw r1, #0xABCD
+[TRACE] PC=0x00008018 Instr=0xE30A1BCD
+[K12] key=0x30C op1=1 op2=16 op3=12
+[K12] MOVW match (key=0x30C)
+0000801C:       E3411234        movt r1, #0x1234
+[TRACE] PC=0x0000801C Instr=0xE3411234
+[K12] key=0x343 op1=1 op2=20 op3=3
+[K12] MOVT match (key=0x343)
+00008020:       E7CF141F        .word 0xE7CF141F
+[TRACE] PC=0x00008020 Instr=0xE7CF141F
+[K12] key=0x7C1 op1=3 op2=28 op3=1
+[K12] BFC match (key=0x7C1)
+00008024:       E5861004        str r1, [r6, #+4]
+[TRACE] PC=0x00008024 Instr=0xE5861004
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x00100004] <= r1 (0x123400CD)
+00008028:       E3042321        movw r2, #0x4321
+[TRACE] PC=0x00008028 Instr=0xE3042321
+[K12] key=0x302 op1=1 op2=16 op3=2
+[K12] MOVW match (key=0x302)
+0000802C:       E3482765        movt r2, #0x8765
+[TRACE] PC=0x0000802C Instr=0xE3482765
+[K12] key=0x346 op1=1 op2=20 op3=6
+[K12] MOVT match (key=0x346)
+00008030:       E7C7221F        .word 0xE7C7221F
+[TRACE] PC=0x00008030 Instr=0xE7C7221F
+[K12] key=0x7C1 op1=3 op2=28 op3=1
+[K12] BFC match (key=0x7C1)
+00008034:       E5862008        str r2, [r6, #+8]
+[TRACE] PC=0x00008034 Instr=0xE5862008
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x00100008] <= r2 (0x87654301)
+00008038:       E30F30F0        movw r3, #0xF0F0
+[TRACE] PC=0x00008038 Instr=0xE30F30F0
+[K12] key=0x30F op1=1 op2=16 op3=15
+[K12] MOVW match (key=0x30F)
+0000803C:       E34F30F0        movt r3, #0xF0F0
+[TRACE] PC=0x0000803C Instr=0xE34F30F0
+[K12] key=0x34F op1=1 op2=20 op3=15
+[K12] MOVT match (key=0x34F)
+00008040:       E7DB3A1F        .word 0xE7DB3A1F
+[TRACE] PC=0x00008040 Instr=0xE7DB3A1F
+[K12] key=0x7D1 op1=3 op2=29 op3=1
+[K12] BFC match (key=0x7D1)
+00008044:       E586300C        str r3, [r6, #+12]
+[TRACE] PC=0x00008044 Instr=0xE586300C
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x0010000C] <= r3 (0xF000F0F0)
+00008048:       E1212374        .word 0xE1212374
+[TRACE] PC=0x00008048 Instr=0xE1212374
+[K12] key=0x127 op1=0 op2=18 op3=7
+[K12] BKPT match (key=0x127)

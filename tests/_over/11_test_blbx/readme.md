@@ -1,0 +1,1 @@
+arm-none-eabi-objdump -d test_blbx.elf

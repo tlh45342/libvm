@@ -1,0 +1,19 @@
+; BL/BX roundtrip test
+logfile test_blbx.log
+load test_blbx.bin 0x8000
+set cpu debug=all
+set r15 0x8000
+
+; Start execution
+step         ; MOV r0, #0x42
+step         ; BL subroutine
+regs
+step         ; MOV r1, r0
+regs
+step         ; BX lr
+regs
+step         ; B halt
+regs
+step         ; should hit DEADBEEF
+regs
+step

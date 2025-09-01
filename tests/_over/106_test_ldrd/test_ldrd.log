@@ -1,0 +1,57 @@
+Logging to test_ldrd.log
+[LOAD] test_ldrd.bin @ 0x00008000 (64 bytes)
+r15 <= 0x00008000
+00008000:       E28F4028        add r4, r15, #0x28
+[TRACE] PC=0x00008000 Instr=0xE28F4028
+[K12] key=0x282 op1=1 op2=8 op3=2
+[K12] ADD match (key=0x282)
+00008004:       E1C400D0        .word 0xE1C400D0
+[TRACE] PC=0x00008004 Instr=0xE1C400D0
+[K12] key=0x1CD op1=0 op2=28 op3=13
+[K12] LDRD(imm) match (key=0x1CD)
+[LDRD] r0=0xDEADBEEF r1=0xE1A00000 from [0x00008028]
+00008008:       E3006000        tst r0, #0x0
+[TRACE] PC=0x00008008 Instr=0xE3006000
+[K12] key=0x300 op1=1 op2=16 op3=0
+[K12] MOVW match (key=0x300)
+0000800C:       E3406010        cmp r0, #0x10
+[TRACE] PC=0x0000800C Instr=0xE3406010
+[K12] key=0x341 op1=1 op2=20 op3=1
+[K12] MOVT match (key=0x341)
+00008010:       E1C600F0        .word 0xE1C600F0
+[TRACE] PC=0x00008010 Instr=0xE1C600F0
+[K12] key=0x1CF op1=0 op2=28 op3=15
+[K12] STRD(imm) match (key=0x1CF)
+[STRD] [0x00100000] <= r0=0xDEADBEEF, [0x00100004] <= r1=0xE1A00000
+00008014:       E3A05008        mov r5, #0x8
+[TRACE] PC=0x00008014 Instr=0xE3A05008
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008018:       E18420D5        .word 0xE18420D5
+[TRACE] PC=0x00008018 Instr=0xE18420D5
+[K12] key=0x18D op1=0 op2=24 op3=13
+[K12] LDRD(reg) match (key=0x18D)
+[LDRD] r2=0x11223344 r3=0x55667788 from [0x00008030]
+0000801C:       E3007010        tst r0, #0x10
+[TRACE] PC=0x0000801C Instr=0xE3007010
+[K12] key=0x301 op1=1 op2=16 op3=1
+[K12] MOVW match (key=0x301)
+00008020:       E3407010        cmp r0, #0x10
+[TRACE] PC=0x00008020 Instr=0xE3407010
+[K12] key=0x341 op1=1 op2=20 op3=1
+[K12] MOVT match (key=0x341)
+00008024:       E1C720F0        .word 0xE1C720F0
+[TRACE] PC=0x00008024 Instr=0xE1C720F0
+[K12] key=0x1CF op1=0 op2=28 op3=15
+[K12] STRD(imm) match (key=0x1CF)
+[STRD] [0x00100010] <= r2=0x11223344, [0x00100014] <= r3=0x55667788
+00008028:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008028 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+[HALT] DEADBEEF.  Halting VM.
+r0  = 0xDEADBEEF  r1  = 0xE1A00000  r2  = 0x11223344  r3  = 0x55667788
+r4  = 0x00008028  r5  = 0x00000008  r6  = 0x00100000  r7  = 0x00100010
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x00008028
+CPSR = 0x00000000  cycle=11

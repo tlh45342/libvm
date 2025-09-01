@@ -1,0 +1,31 @@
+Logging to test_ldrb.log
+[DEBUG] debug_flags set to 0x000003FF
+[LOAD] test_ldrb.bin @ 0x00008000 (21 bytes)
+arm-vm version 0.0.125
+r15 <= 0x00008000
+r0  = 0x00000000  r1  = 0x00000000  r2  = 0x00000000  r3  = 0x00000000
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00000000  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x00008000
+CPSR = 0x00000000  cycle=0
+00008000:       E59F0004        ldr r0, [pc, #4]
+[TRACE] PC=0x00008000 Instr=0xE59F0004
+[K12] key=0x590 op1=2 op2=25 op3=0
+[K12] LDR(literal) match (key=0x590)
+[LDR lit] r0 <= [0x0000800C] => 0x00008010
+00008004:       E4D01001        ldrb r1, [r0], #1
+[TRACE] PC=0x00008004 Instr=0xE4D01001
+[K12] key=0x4D0 op1=2 op2=13 op3=0
+[K12] LDRB post-imm match (key=0x4D0)
+[LDRB post-imm] r1 = mem8[0x00008010] => 0x58; r0 += 0x1
+r0  = 0x00008011  r1  = 0x00000058  r2  = 0x00000000  r3  = 0x00000000
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00000000  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x00008008
+CPSR = 0x00000000  cycle=2
+0x00008010: 58 59 5a 0a
+00008008:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008008 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+[HALT] DEADBEEF.  Halting VM.

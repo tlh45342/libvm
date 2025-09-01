@@ -1,0 +1,84 @@
+Logging to test_and.log
+[LOAD] test_and.bin @ 0x00008000 (76 bytes)
+r15 <= 0x00008000
+00008000:       E30000F0        movw r0, #0x00F0
+[TRACE] PC=0x00008000 Instr=0xE30000F0
+[K12] key=0x30F op1=1 op2=16 op3=15
+[K12] MOVW match (key=0x30F)
+00008004:       E34F00F0        movt r0, #0xF0F0
+[TRACE] PC=0x00008004 Instr=0xE34F00F0
+[K12] key=0x34F op1=1 op2=20 op3=15
+[K12] MOVT match (key=0x34F)
+00008008:       E3001F0F        movw r1, #0x0F0F
+[TRACE] PC=0x00008008 Instr=0xE3001F0F
+[K12] key=0x300 op1=1 op2=16 op3=0
+[K12] MOVW match (key=0x300)
+0000800C:       E3401F0F        movt r1, #0x0F0F
+[TRACE] PC=0x0000800C Instr=0xE3401F0F
+[K12] key=0x340 op1=1 op2=20 op3=0
+[K12] MOVT match (key=0x340)
+00008010:       E0002001        .word 0xE0002001
+[TRACE] PC=0x00008010 Instr=0xE0002001
+[K12] key=0x000 op1=0 op2=0 op3=0
+[K12] AND match (key=0x000)
+00008014:       E0103000        .word 0xE0103000
+[TRACE] PC=0x00008014 Instr=0xE0103000
+[K12] key=0x010 op1=0 op2=1 op3=0
+[K12] AND match (key=0x010)
+00008018:       E20044FF        and r4, r0, #0xFF000000
+[TRACE] PC=0x00008018 Instr=0xE20044FF
+[K12] key=0x20F op1=1 op2=0 op3=15
+[K12] AND (imm) match (key=0x20F)
+0000801C:       E3001001        movw r1, #0x0001
+[TRACE] PC=0x0000801C Instr=0xE3001001
+[K12] key=0x300 op1=1 op2=16 op3=0
+[K12] MOVW match (key=0x300)
+00008020:       E3481000        movt r1, #0x8000
+[TRACE] PC=0x00008020 Instr=0xE3481000
+[K12] key=0x340 op1=1 op2=20 op3=0
+[K12] MOVT match (key=0x340)
+00008024:       E3A02001        mov r2, #0x1
+[TRACE] PC=0x00008024 Instr=0xE3A02001
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008028:       E0115231        .word 0xE0115231
+[TRACE] PC=0x00008028 Instr=0xE0115231
+[K12] key=0x013 op1=0 op2=1 op3=3
+[K12] AND match (key=0x013)
+0000802C:       E2106101        ands r6, r0, #0x40000000
+[TRACE] PC=0x0000802C Instr=0xE2106101
+[K12] key=0x210 op1=1 op2=1 op3=0
+[K12] AND (imm) match (key=0x210)
+00008030:       E0107000        .word 0xE0107000
+[TRACE] PC=0x00008030 Instr=0xE0107000
+[K12] key=0x010 op1=0 op2=1 op3=0
+[K12] AND match (key=0x010)
+00008034:       E0118001        .word 0xE0118001
+[TRACE] PC=0x00008034 Instr=0xE0118001
+[K12] key=0x010 op1=0 op2=1 op3=0
+[K12] AND match (key=0x010)
+00008038:       E0000001        .word 0xE0000001
+[TRACE] PC=0x00008038 Instr=0xE0000001
+[K12] key=0x000 op1=0 op2=0 op3=0
+[K12] AND match (key=0x000)
+0000803C:       E3A09000        mov r9, #0x0
+[TRACE] PC=0x0000803C Instr=0xE3A09000
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008040:       E1190009        .word 0xE1190009
+[TRACE] PC=0x00008040 Instr=0xE1190009
+[K12] key=0x110 op1=0 op2=17 op3=0
+[K12] TST match (key=0x110)
+00008044:       1000A000        .word 0x1000A000
+[TRACE] PC=0x00008044 Instr=0x1000A000
+[K12] key=0x000 op1=0 op2=0 op3=0
+[K12] AND cond fail (0x1)
+00008048:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008048 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+r0  = 0x80000000  r1  = 0x80000001  r2  = 0x00000001  r3  = 0xF0F000F0
+r4  = 0xF0000000  r5  = 0x00000000  r6  = 0x40000000  r7  = 0xF0F000F0
+r8  = 0x80000001  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x00008048
+CPSR = 0x40000000  cycle=19

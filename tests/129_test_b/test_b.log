@@ -1,0 +1,41 @@
+Logging to test_b.log
+arm-vm version 0.0.129
+[LOAD] test_b.bin @ 0x00008000 (40 bytes)
+r15 <= 0x00008000
+00008000:       E3A00001        mov r0, #0x1
+[TRACE] PC=0x00008000 Instr=0xE3A00001
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008004:       E3500000        cmp r0, #0x0
+[TRACE] PC=0x00008004 Instr=0xE3500000
+[K12] key=0x350 op1=1 op2=21 op3=0
+[K12] CMP match (key=0x350)
+00008008:       0A000000        b 0x00008010
+[TRACE] PC=0x00008008 Instr=0x0A000000
+[K12] key=0xA00 op1=5 op2=0 op3=0
+[K12] B cond fail (0x0)
+0000800C:       EA000000        b 0x00008014
+[TRACE] PC=0x0000800C Instr=0xEA000000
+[K12] key=0xA00 op1=5 op2=0 op3=0
+[K12] B match (key=0xA00)
+00008014:       E3A00000        mov r0, #0x0
+[TRACE] PC=0x00008014 Instr=0xE3A00000
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008018:       E3500000        cmp r0, #0x0
+[TRACE] PC=0x00008018 Instr=0xE3500000
+[K12] key=0x350 op1=1 op2=21 op3=0
+[K12] CMP match (key=0x350)
+0000801C:       0A000000        b 0x00008024
+[TRACE] PC=0x0000801C Instr=0x0A000000
+[K12] key=0xA00 op1=5 op2=0 op3=0
+[K12] B match (key=0xA00)
+00008024:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008024 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+r0  = 0x00000000  r1  = 0x00000000  r2  = 0x00000000  r3  = 0x00000000
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00000000  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x00008024
+CPSR = 0x60000000  cycle=8

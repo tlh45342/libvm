@@ -1,0 +1,127 @@
+Logging to test_uart_write.log
+[DEBUG] debug_flags set to 0x000003FF
+[LOAD] test_uart_write.bin @ 0x00008000 (144 bytes)
+r15 <= 0x00008000
+00008000:       E59F0080        ldr r0, [pc, #128]
+[TRACE] PC=0x00008000 Instr=0xE59F0080
+[K12] key=0x598 op1=2 op2=25 op3=8
+[K12] LDR(literal) match (key=0x598)
+[LDR lit] r0 <= [0x00008088] => 0x00008060
+00008004:       EB00000A        bl  0x00008034
+[TRACE] PC=0x00008004 Instr=0xEB00000A
+[K12] key=0xB00 op1=5 op2=16 op3=0
+[K12] BL match (key=0xB00)
+[BL] A=0x00008004 LR<=0x00008008 base=0x0000800C imm24=0x00000A off=40 -> target=0x00008034
+00008034:       E92D4010        stmdb sp!, {r4, lr}
+[TRACE] PC=0x00008034 Instr=0xE92D4010
+[K12] key=0x921 op1=4 op2=18 op3=1
+[K12] STM match (key=0x921)
+[STR] mem[0x1ffffff4] <= 0x00000000
+[STR] mem[0x1ffffff8] <= 0x00008008
+00008038:       E1A04000        .word 0xE1A04000
+[TRACE] PC=0x00008038 Instr=0xE1A04000
+[K12] key=0x1A0 op1=0 op2=26 op3=0
+[K12] MOV match (key=0x1A0)
+0000803C:       E4D40001        ldrb r0, [r4], #1
+[TRACE] PC=0x0000803C Instr=0xE4D40001
+[K12] key=0x4D0 op1=2 op2=13 op3=0
+[K12] LDRB post-imm match (key=0x4D0)
+[LDRB post-imm] r0 = mem8[0x00008060] => 0x48; r4 += 0x1
+00008040:       E3500000        cmp r0, #0x0
+[TRACE] PC=0x00008040 Instr=0xE3500000
+[K12] key=0x350 op1=1 op2=21 op3=0
+[K12] CMP match (key=0x350)
+00008044:       0A000001        b   0x00008050
+[TRACE] PC=0x00008044 Instr=0x0A000001
+[K12] key=0xA00 op1=5 op2=0 op3=0
+[K12] B cond fail (0x0)
+00008048:       EBFFFFF2        bl  0x00008018
+[TRACE] PC=0x00008048 Instr=0xEBFFFFF2
+[K12] key=0xBFF op1=5 op2=31 op3=15
+[K12] LDRD(imm) match (key=0xBFF)
+[ERROR] LDRD: Rt must be even and Rt/Rt+1 must not be r15 (Rt=15)
+0000804C:       EAFFFFFA        b   0x0000803C
+[TRACE] PC=0x0000804C Instr=0xEAFFFFFA
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] LDRD(imm) match (key=0xAFF)
+[ERROR] LDRD: Rt must be even and Rt/Rt+1 must not be r15 (Rt=15)
+00008050:       E8BD4010        ldmia sp!, {r4, lr}
+[TRACE] PC=0x00008050 Instr=0xE8BD4010
+[K12] key=0x8B1 op1=4 op2=11 op3=1
+[K12] LDM match (key=0x8B1)
+[LDM] r4 <= mem[0x1FFFFFF4] => 0x00000000
+[LDM] r14 <= mem[0x1FFFFFF8] => 0x00008008
+00008054:       E12FFF1E        .word 0xE12FFF1E
+[TRACE] PC=0x00008054 Instr=0xE12FFF1E
+[K12] key=0x121 op1=0 op2=18 op3=1
+[K12] BX match (key=0x121)
+[BX] r14 => 0x00008008
+00008008:       E59F007C        ldr r0, [pc, #124]
+[TRACE] PC=0x00008008 Instr=0xE59F007C
+[K12] key=0x597 op1=2 op2=25 op3=7
+[K12] LDR(literal) match (key=0x597)
+[LDR lit] r0 <= [0x0000808C] => 0x0000806F
+0000800C:       EB000008        bl  0x00008034
+[TRACE] PC=0x0000800C Instr=0xEB000008
+[K12] key=0xB00 op1=5 op2=16 op3=0
+[K12] BL match (key=0xB00)
+[BL] A=0x0000800C LR<=0x00008010 base=0x00008014 imm24=0x000008 off=32 -> target=0x00008034
+00008034:       E92D4010        stmdb sp!, {r4, lr}
+[TRACE] PC=0x00008034 Instr=0xE92D4010
+[K12] key=0x921 op1=4 op2=18 op3=1
+[K12] STM match (key=0x921)
+[STR] mem[0x1ffffff4] <= 0x00000000
+[STR] mem[0x1ffffff8] <= 0x00008010
+00008038:       E1A04000        .word 0xE1A04000
+[TRACE] PC=0x00008038 Instr=0xE1A04000
+[K12] key=0x1A0 op1=0 op2=26 op3=0
+[K12] MOV match (key=0x1A0)
+0000803C:       E4D40001        ldrb r0, [r4], #1
+[TRACE] PC=0x0000803C Instr=0xE4D40001
+[K12] key=0x4D0 op1=2 op2=13 op3=0
+[K12] LDRB post-imm match (key=0x4D0)
+[LDRB post-imm] r0 = mem8[0x0000806F] => 0x5B; r4 += 0x1
+00008040:       E3500000        cmp r0, #0x0
+[TRACE] PC=0x00008040 Instr=0xE3500000
+[K12] key=0x350 op1=1 op2=21 op3=0
+[K12] CMP match (key=0x350)
+00008044:       0A000001        b   0x00008050
+[TRACE] PC=0x00008044 Instr=0x0A000001
+[K12] key=0xA00 op1=5 op2=0 op3=0
+[K12] B cond fail (0x0)
+00008048:       EBFFFFF2        bl  0x00008018
+[TRACE] PC=0x00008048 Instr=0xEBFFFFF2
+[K12] key=0xBFF op1=5 op2=31 op3=15
+[K12] LDRD(imm) match (key=0xBFF)
+[ERROR] LDRD: Rt must be even and Rt/Rt+1 must not be r15 (Rt=15)
+0000804C:       EAFFFFFA        b   0x0000803C
+[TRACE] PC=0x0000804C Instr=0xEAFFFFFA
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] LDRD(imm) match (key=0xAFF)
+[ERROR] LDRD: Rt must be even and Rt/Rt+1 must not be r15 (Rt=15)
+00008050:       E8BD4010        ldmia sp!, {r4, lr}
+[TRACE] PC=0x00008050 Instr=0xE8BD4010
+[K12] key=0x8B1 op1=4 op2=11 op3=1
+[K12] LDM match (key=0x8B1)
+[LDM] r4 <= mem[0x1FFFFFF4] => 0x00000000
+[LDM] r14 <= mem[0x1FFFFFF8] => 0x00008010
+00008054:       E12FFF1E        .word 0xE12FFF1E
+[TRACE] PC=0x00008054 Instr=0xE12FFF1E
+[K12] key=0x121 op1=0 op2=18 op3=1
+[K12] BX match (key=0x121)
+[BX] r14 => 0x00008010
+00008010:       E320F000        .word 0xE320F000
+[TRACE] PC=0x00008010 Instr=0xE320F000
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] NOP match (key=0x320)
+[NOP]
+00008014:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008014 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+[HALT] DEADBEEF.  Halting VM.
+r0  = 0x0000005B  r1  = 0x00000000  r2  = 0x00000000  r3  = 0x00000000
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00000000  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00008010  r15 = 0x00008014
+CPSR = 0x20000000  cycle=24

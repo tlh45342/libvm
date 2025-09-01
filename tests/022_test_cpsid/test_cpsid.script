@@ -1,0 +1,6 @@
+set cpu debug=all
+logfile test_cpsid.log
+version
+load test_cpsid.bin 0x8000
+set r15 0x8000
+run

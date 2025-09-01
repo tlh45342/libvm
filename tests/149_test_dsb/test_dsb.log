@@ -1,0 +1,76 @@
+Logging to test_dsb.log
+arm-vm version 0.0.129
+[LOAD] test_dsb.bin @ 0x00008000 (68 bytes)
+r15 <= 0x00008000
+00008000:       E3006000        movw r6, #0x0000
+[TRACE] PC=0x00008000 Instr=0xE3006000
+[K12] key=0x300 op1=1 op2=16 op3=0
+[K12] MOVW match (key=0x300)
+00008004:       E3406010        movt r6, #0x0010
+[TRACE] PC=0x00008004 Instr=0xE3406010
+[K12] key=0x341 op1=1 op2=20 op3=1
+[K12] MOVT match (key=0x341)
+00008008:       E10F0000        .word 0xE10F0000
+[TRACE] PC=0x00008008 Instr=0xE10F0000
+[K12] key=0x100 op1=0 op2=16 op3=0
+[K12] MRS match (key=0x100)
+0000800C:       E5860000        str r0, [r6, #+0]
+[TRACE] PC=0x0000800C Instr=0xE5860000
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x00100000] <= r0 (0x00000000)
+00008010:       F57FF04F        dsb sy
+[TRACE] PC=0x00008010 Instr=0xF57FF04F
+[K12] key=0x574 op1=2 op2=23 op3=4
+[K12] DSB match (key=0x574)
+00008014:       E10F1000        .word 0xE10F1000
+[TRACE] PC=0x00008014 Instr=0xE10F1000
+[K12] key=0x100 op1=0 op2=16 op3=0
+[K12] MRS match (key=0x100)
+00008018:       E0202001        .word 0xE0202001
+[TRACE] PC=0x00008018 Instr=0xE0202001
+[K12] key=0x020 op1=0 op2=2 op3=0
+[K12] EOR match (key=0x020)
+0000801C:       E5862004        str r2, [r6, #+4]
+[TRACE] PC=0x0000801C Instr=0xE5862004
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x00100004] <= r2 (0x00000000)
+00008020:       F57FF04E        ldrb r15, [pc, #-78]
+[TRACE] PC=0x00008020 Instr=0xF57FF04E
+[K12] key=0x574 op1=2 op2=23 op3=4
+[K12] DSB match (key=0x574)
+00008024:       E10F3000        .word 0xE10F3000
+[TRACE] PC=0x00008024 Instr=0xE10F3000
+[K12] key=0x100 op1=0 op2=16 op3=0
+[K12] MRS match (key=0x100)
+00008028:       E0204003        .word 0xE0204003
+[TRACE] PC=0x00008028 Instr=0xE0204003
+[K12] key=0x020 op1=0 op2=2 op3=0
+[K12] EOR match (key=0x020)
+0000802C:       E5864008        str r4, [r6, #+8]
+[TRACE] PC=0x0000802C Instr=0xE5864008
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x00100008] <= r4 (0x00000000)
+00008030:       F57FF04B        ldrb r15, [pc, #-75]
+[TRACE] PC=0x00008030 Instr=0xF57FF04B
+[K12] key=0x574 op1=2 op2=23 op3=4
+[K12] DSB match (key=0x574)
+00008034:       E10F5000        .word 0xE10F5000
+[TRACE] PC=0x00008034 Instr=0xE10F5000
+[K12] key=0x100 op1=0 op2=16 op3=0
+[K12] MRS match (key=0x100)
+00008038:       E0207005        .word 0xE0207005
+[TRACE] PC=0x00008038 Instr=0xE0207005
+[K12] key=0x020 op1=0 op2=2 op3=0
+[K12] EOR match (key=0x020)
+0000803C:       E586700C        str r7, [r6, #+12]
+[TRACE] PC=0x0000803C Instr=0xE586700C
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x0010000C] <= r7 (0x00000000)
+00008040:       E1212374        .word 0xE1212374
+[TRACE] PC=0x00008040 Instr=0xE1212374
+[K12] key=0x127 op1=0 op2=18 op3=7
+[K12] BKPT match (key=0x127)

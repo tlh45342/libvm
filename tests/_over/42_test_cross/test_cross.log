@@ -1,0 +1,49 @@
+Logging to test_cross.log
+[DEBUG] debug_flags set to 0x000003FF
+[LOAD] test_cross.bin @ 0x00008000 (36 bytes)
+r15 <= 0x00008000
+00008000:       E3E0D23E        .word 0xE3E0D23E
+[TRACE] PC=0x00008000 Instr=0xE3E0D23E
+[K12] key=0x3E3 op1=1 op2=30 op3=3
+[K12] MVN (imm) match (key=0x3E3)
+00008004:       EB000000        bl  0x0000800C
+[TRACE] PC=0x00008004 Instr=0xEB000000
+[K12] key=0xB00 op1=5 op2=16 op3=0
+[K12] BL match (key=0xB00)
+0000800C:       E3A0340A        mov r3, #0xA000000
+[TRACE] PC=0x0000800C Instr=0xE3A0340A
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008010:       E3A01041        mov r1, #0x41
+[TRACE] PC=0x00008010 Instr=0xE3A01041
+[K12] key=0x3A4 op1=1 op2=26 op3=4
+[K12] MOV (imm) match (key=0x3A4)
+00008014:       E3A02007        mov r2, #0x7
+[TRACE] PC=0x00008014 Instr=0xE3A02007
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008018:       E5C31000        strb r1, [r3, #0]
+[TRACE] PC=0x00008018 Instr=0xE5C31000
+[K12] key=0x5C0 op1=2 op2=28 op3=0
+[K12] STRB pre-imm match (key=0x5C0)
+[STRB pre-inc imm] mem[0x0A000000] <= r1 (0x41)
+0000801C:       E5C32001        strb r2, [r3, #1]
+[TRACE] PC=0x0000801C Instr=0xE5C32001
+[K12] key=0x5C0 op1=2 op2=28 op3=0
+[K12] STRB pre-imm match (key=0x5C0)
+[STRB pre-inc imm] mem[0x0A000001] <= r2 (0x07)
+00008020:       E12FFF1E        .word 0xE12FFF1E
+[TRACE] PC=0x00008020 Instr=0xE12FFF1E
+[K12] key=0x121 op1=0 op2=18 op3=1
+[K12] BX match (key=0x121)
+00008008:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008008 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+r0  = 0x00000000  r1  = 0x00000041  r2  = 0x00000007  r3  = 0x0A000000
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00000000  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00008008  r15 = 0x00008008
+CPSR = 0x00000000  cycle=9
+0x0a000000: 41 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x0a000010: 00

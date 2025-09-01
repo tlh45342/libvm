@@ -1,0 +1,65 @@
+Logging to test_dp_flags.log
+[DEBUG] debug_flags set to 0x000003FF
+[LOAD] test_dp_flags.bin @ 0x00008000 (56 bytes)
+r15 <= 0x00008000
+00008000:       E30F0FFF        movw r0, #0xFFFF
+[TRACE] PC=0x00008000 Instr=0xE30F0FFF
+[K12] key=0x30F op1=1 op2=16 op3=15
+[K12] MOVW match (key=0x30F)
+00008004:       E3470FFF        movt r0, #0x7FFF
+[TRACE] PC=0x00008004 Instr=0xE3470FFF
+[K12] key=0x34F op1=1 op2=20 op3=15
+[K12] MOVT match (key=0x34F)
+00008008:       E3A01001        mov r1, #0x1
+[TRACE] PC=0x00008008 Instr=0xE3A01001
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+0000800C:       E0902001        .word 0xE0902001
+[TRACE] PC=0x0000800C Instr=0xE0902001
+[K12] key=0x090 op1=0 op2=9 op3=0
+[K12] ADD match (key=0x090)
+00008010:       E10FA000        .word 0xE10FA000
+[TRACE] PC=0x00008010 Instr=0xE10FA000
+[K12] key=0x100 op1=0 op2=16 op3=0
+[K12] MRS match (key=0x100)
+00008014:       E30F0FFF        movw r0, #0xFFFF
+[TRACE] PC=0x00008014 Instr=0xE30F0FFF
+[K12] key=0x30F op1=1 op2=16 op3=15
+[K12] MOVW match (key=0x30F)
+00008018:       E34F0FFF        movt r0, #0xFFFF
+[TRACE] PC=0x00008018 Instr=0xE34F0FFF
+[K12] key=0x34F op1=1 op2=20 op3=15
+[K12] MOVT match (key=0x34F)
+0000801C:       E3A01001        mov r1, #0x1
+[TRACE] PC=0x0000801C Instr=0xE3A01001
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008020:       E0903001        .word 0xE0903001
+[TRACE] PC=0x00008020 Instr=0xE0903001
+[K12] key=0x090 op1=0 op2=9 op3=0
+[K12] ADD match (key=0x090)
+00008024:       E10FB000        .word 0xE10FB000
+[TRACE] PC=0x00008024 Instr=0xE10FB000
+[K12] key=0x100 op1=0 op2=16 op3=0
+[K12] MRS match (key=0x100)
+00008028:       E3A00000        mov r0, #0x0
+[TRACE] PC=0x00008028 Instr=0xE3A00000
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+0000802C:       E2A06000        .word 0xE2A06000
+[TRACE] PC=0x0000802C Instr=0xE2A06000
+[K12] key=0x2A0 op1=1 op2=10 op3=0
+[K12] ADC match (key=0x2A0)
+00008030:       E10FC000        .word 0xE10FC000
+[TRACE] PC=0x00008030 Instr=0xE10FC000
+[K12] key=0x100 op1=0 op2=16 op3=0
+[K12] MRS match (key=0x100)
+00008034:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008034 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+r0  = 0x00000000  r1  = 0x00000001  r2  = 0x80000000  r3  = 0x00000000
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00000001  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x90000000  r11 = 0x60000000
+r12 = 0x60000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x00008034
+CPSR = 0x60000000  cycle=14

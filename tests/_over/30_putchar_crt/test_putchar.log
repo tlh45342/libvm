@@ -1,0 +1,23 @@
+Logging to test_putchar.log
+arm-vm version 0.0.125
+[LOAD] test_putchar.bin @ 0x00008000 (16 bytes)
+r15 <= 0x00008000
+00008000:       E3A00058        mov r0, #0x58
+[TRACE] PC=0x00008000 Instr=0xE3A00058
+[K12] key=0x3A5 op1=1 op2=26 op3=5
+[K12] MOV (imm) match (key=0x3A5)
+00008004:       E3A0140A        mov r1, #0xA000000
+[TRACE] PC=0x00008004 Instr=0xE3A0140A
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008008:       E5C10000        strb r0, [r1, #0]
+[TRACE] PC=0x00008008 Instr=0xE5C10000
+[K12] key=0x5C0 op1=2 op2=28 op3=0
+[K12] STRB pre-imm match (key=0x5C0)
+[STRB pre-inc imm] mem[0x0A000000] <= r0 (0x58)
+0000800C:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x0000800C Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+[HALT] DEADBEEF.  Halting VM.
+[ERROR] Unknown command: show

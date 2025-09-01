@@ -1,0 +1,12 @@
+Logging to test_wfi.log
+[LOAD] test_wfi.bin @ 0x00008000 (4 bytes)
+r15 <= 0x00008000
+00008000:       E320F003        .word 0xE320F003
+[TRACE] PC=0x00008000 Instr=0xE320F003
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] WFI match (key=0x320)
+r0  = 0x00000000  r1  = 0x00000000  r2  = 0x00000000  r3  = 0x00000000
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00000000  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x00008004
+CPSR = 0x00000000  cycle=1

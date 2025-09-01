@@ -1,0 +1,40 @@
+Logging to test_stack.log
+arm-vm version 0.0.125
+[LOAD] test_stack.bin @ 0x00008000 (24 bytes)
+r15 <= 0x00008000
+r0  = 0x00000000  r1  = 0x00000000  r2  = 0x00000000  r3  = 0x00000000
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00000000  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x00008000
+CPSR = 0x00000000  cycle=0
+00008000:       E3A01011        mov r1, #0x11
+[TRACE] PC=0x00008000 Instr=0xE3A01011
+[K12] key=0x3A1 op1=1 op2=26 op3=1
+[K12] MOV (imm) match (key=0x3A1)
+00008004:       E3A02022        mov r2, #0x22
+[TRACE] PC=0x00008004 Instr=0xE3A02022
+[K12] key=0x3A2 op1=1 op2=26 op3=2
+[K12] MOV (imm) match (key=0x3A2)
+00008008:       E3A03033        mov r3, #0x33
+[TRACE] PC=0x00008008 Instr=0xE3A03033
+[K12] key=0x3A3 op1=1 op2=26 op3=3
+[K12] MOV (imm) match (key=0x3A3)
+0000800C:       E92D000E        stmdb sp!, {r1, r2, r3}
+[TRACE] PC=0x0000800C Instr=0xE92D000E
+[K12] key=0x920 op1=4 op2=18 op3=0
+[K12] STM match (key=0x920)
+[STR] mem[0x1ffffff0] <= 0x00000011
+[STR] mem[0x1ffffff4] <= 0x00000022
+[STR] mem[0x1ffffff8] <= 0x00000033
+00008010:       E8BD0070        ldmia sp!, {r4, r5, r6}
+[TRACE] PC=0x00008010 Instr=0xE8BD0070
+[K12] key=0x8B7 op1=4 op2=11 op3=7
+[K12] LDM match (key=0x8B7)
+[LDM] r4 <= mem[0x1FFFFFF0] => 0x00000011
+[LDM] r5 <= mem[0x1FFFFFF4] => 0x00000022
+[LDM] r6 <= mem[0x1FFFFFF8] => 0x00000033
+00008014:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008014 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+[HALT] DEADBEEF.  Halting VM.

@@ -1,0 +1,70 @@
+Logging to test_disk_read.log
+[DEBUG] debug_flags set to 0x000003FF
+[LOAD] test_disk_read.bin @ 0x00008000 (56 bytes)
+r15 <= 0x00008000
+[DISK] disk0 attached at 0x0B000000 (1474560 bytes)
+00008000:       E3A0040B        mov r0, #0xB000000
+[TRACE] PC=0x00008000 Instr=0xE3A0040B
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008004:       E3A01013        mov r1, #0x13
+[TRACE] PC=0x00008004 Instr=0xE3A01013
+[K12] key=0x3A1 op1=1 op2=26 op3=1
+[K12] MOV (imm) match (key=0x3A1)
+00008008:       E5801004        str r1, [r0, #4]
+[TRACE] PC=0x00008008 Instr=0xE5801004
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x0B000004] <= r1 (0x00000013)
+0000800C:       E3A04801        mov r4, #0x10000
+[TRACE] PC=0x0000800C Instr=0xE3A04801
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008010:       E5804008        str r4, [r0, #8]
+[TRACE] PC=0x00008010 Instr=0xE5804008
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x0B000008] <= r4 (0x00010000)
+00008014:       E3A01001        mov r1, #0x1
+[TRACE] PC=0x00008014 Instr=0xE3A01001
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008018:       E5801000        str r1, [r0, #0]
+[TRACE] PC=0x00008018 Instr=0xE5801000
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+[STR pre-inc imm] mem[0x0B000000] <= r1 (0x00000001)
+0000801C:       E590100C        ldr r1, [r0, #12]
+[TRACE] PC=0x0000801C Instr=0xE590100C
+[K12] key=0x590 op1=2 op2=25 op3=0
+[K12] LDR  pre-imm match (key=0x590)
+[LDR pre-inc imm] r1 = mem[0x0B00000C] => 0x00000000
+00008020:       E3510000        cmp r1, #0x0
+[TRACE] PC=0x00008020 Instr=0xE3510000
+[K12] key=0x350 op1=1 op2=21 op3=0
+[K12] CMP match (key=0x350)
+00008024:       1AFFFFFC        b   0x0000801C
+[TRACE] PC=0x00008024 Instr=0x1AFFFFFC
+[K12] key=0xAFF op1=5 op2=15 op3=15
+[K12] B cond fail (0x1)
+00008028:       E5D42000        ldrb r2, [r4, #0]
+[TRACE] PC=0x00008028 Instr=0xE5D42000
+[K12] key=0x5D0 op1=2 op2=29 op3=0
+[K12] LDRB pre-imm match (key=0x5D0)
+[LDRB pre-inc imm] r2 = mem8[0x00010000] => 0x00
+0000802C:       E3A03409        mov r3, #0x9000000
+[TRACE] PC=0x0000802C Instr=0xE3A03409
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008030:       E5C32000        strb r2, [r3, #0]
+[TRACE] PC=0x00008030 Instr=0xE5C32000
+[K12] key=0x5C0 op1=2 op2=28 op3=0
+[K12] STRB pre-imm match (key=0x5C0)
+[STRB pre-inc imm] mem[0x09000000] <= r2 (0x00)
+00008034:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008034 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+0x00010000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00010010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00010020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00

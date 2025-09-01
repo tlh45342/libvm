@@ -1,0 +1,6 @@
+logfile test_ldr_postimm.log
+load test_ldr_postimm.bin 0x8000
+set r15 0x8000
+set cpu debug=all
+run
+regs

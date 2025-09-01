@@ -1,0 +1,25 @@
+Logging to test_barriers.log
+[DEBUG] debug_flags set to 0x000003FF
+[LOAD] test_barriers.bin @ 0x00008000 (16 bytes)
+r15 <= 0x00008000
+00008000:       F57FF05F        dmb sy
+[TRACE] PC=0x00008000 Instr=0xF57FF05F
+[K12] key=0x575 op1=2 op2=23 op3=5
+[K12] DMB match (key=0x575)
+00008004:       F57FF04F        dsb sy
+[TRACE] PC=0x00008004 Instr=0xF57FF04F
+[K12] key=0x574 op1=2 op2=23 op3=4
+[K12] DSB match (key=0x574)
+00008008:       F57FF06F        isb sy
+[TRACE] PC=0x00008008 Instr=0xF57FF06F
+[K12] key=0x576 op1=2 op2=23 op3=6
+[K12] ISB match (key=0x576)
+0000800C:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x0000800C Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+r0  = 0x00000000  r1  = 0x00000000  r2  = 0x00000000  r3  = 0x00000000
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00000000  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x0000800C
+CPSR = 0x00000000  cycle=4

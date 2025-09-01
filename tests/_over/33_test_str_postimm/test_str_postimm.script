@@ -1,0 +1,6 @@
+logfile test_str_postimm.log
+load test_str_postimm.bin 0x8000
+set r15 0x8000
+set cpu debug=all
+run
+E 0x00008090-0x00008097

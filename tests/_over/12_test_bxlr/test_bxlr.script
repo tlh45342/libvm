@@ -1,0 +1,8 @@
+; test_bxlr.log
+set cpu debug=all
+logfile test_bxlr.log
+load test_bxlr.bin 0x8000
+set r15 0x8000
+regs
+run
+regs
