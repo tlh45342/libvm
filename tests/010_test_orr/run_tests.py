@@ -6,12 +6,26 @@ VM = "arm-vm.exe"
 TEST_NAME = "test_orr"
 
 CHECKS = [
-    ("8000 mov r0, #0x5",         "00008000:       E3A00005"),
-    ("8004 sub r1, r0, #0x2",     "00008004:       E2401002"),
-    ("8008 sub r2, r0, #0x7",     "00008008:       E2402007"),
+    # setup / config
+    ("Debug enabled",        "[DEBUG] debug_flags set to 0x000003FF"),
+    ("Loaded image",         "[LOAD] test_orr.bin @ 0x00008000"),
+    ("PC start",             "r15 <= 0x00008000"),
 
-    # Halt line
-    ("800C HALT (.word)",         "0000800C:       DEADBEEF"),
+    # decode / flow (match your trace exactly)
+    ("8000 mov",             "00008000:       E3A000F0        mov r0, #0xF0"),
+    ("8004 orr imm",         "00008004:       E380100F        orr r1, r0, #0xF"),
+    ("8008 mov",             "00008008:       E3A0200F        mov r2, #0xF"),
+    ("800C orr reg",         "0000800C:       E1813002        .word 0xE1813002"),  # ORR (reg)
+    ("8010 mov",             "00008010:       E3A04000        mov r4, #0x0"),
+    ("8014 orr imm",         "00008014:       E3844001        orr r4, r4, #0x1"),
+    ("8018 mov",             "00008018:       E3A05001        mov r5, #0x1"),
+    ("801C orr shift(S)",    "0000801C:       E1946085        .word 0xE1946085"),  # ORRS r6, r4, r5, lsl #1
+    ("8020 mrs cpsr",        "00008020:       E10FA000        .word 0xE10FA000"),
+    ("8024 orr cond",        "00008024:       038770FF        orr r7, r7, #0xFF"), # cond (EQ) not taken
+    ("8028 mov cond",        "00008028:       03A07001        mov r7, #0x1"),      # cond (EQ) not taken
+
+    # graceful stop
+    ("BKPT trap",            "BKPT"),  # or match the line above; keep whichever your harness expects
 ]
 
 def run_test():

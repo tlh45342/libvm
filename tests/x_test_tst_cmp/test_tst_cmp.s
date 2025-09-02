@@ -20,3 +20,4 @@ _start:
 
 halt:
     .word   0xDEADBEEF
+	

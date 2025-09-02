@@ -20,7 +20,7 @@ test:
 	python run_tests.py
 
 clean:
-	rm -f *.o *.elf *.bin
+	rm -f *.o *.elf *.bin *.log
 	
 objdump:
 	arm-none-eabi-objdump -d $(TARGET).elf

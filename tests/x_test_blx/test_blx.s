@@ -2,14 +2,17 @@
     .arm
     .text
     .global _start
-target:
-    add     r0, r0, #7
-    bx      lr
 
 _start:
     mov     r0, #1
     ldr     r1, =target
-    blx     r1                    @ requires BLX(reg) support
+    blx     r1                 @ requires BLX(reg) implemented
+    b       halt
+
+target:
+    add     r0, r0, #7
+    bx      lr
+
 halt:
     .word   0xDEADBEEF
     .ltorg

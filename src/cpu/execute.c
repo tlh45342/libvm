@@ -68,6 +68,12 @@ static const k12_entry K12_TABLE[] = {
 
 	{ 0x0F00u, 0x0100u, 0xFF00F000u, 0xF1000000u, true, handle_cps, "CPS" },
 
+	// BX / BLX(reg) patterns (A32)
+	// key12(BX  Rm) = 0x0121 ; instr & 0x0FFFFFF0 == 0x012FFF10
+	// key12(BLX Rm) = 0x0123 ; instr & 0x0FFFFFF0 == 0x012FFF30
+	{ 0x0FFFu, 0x0121u, 0x0FFFFFF0u, 0x012FFF10u, true, handle_bx,      "BX (reg)"  },
+	{ 0x0FFFu, 0x0123u, 0x0FFFFFF0u, 0x012FFF30u, true, handle_blx_reg, "BLX (reg)" },
+
     // ---- Wide moves (exact patterns) ----
     { 0x0F00u, 0x0300u, 0x0FF00000u, 0x03000000u, true, handle_movw, "MOVW" },
     { 0x0F00u, 0x0300u, 0x0FF00000u, 0x03400000u, true, handle_movt, "MOVT" },

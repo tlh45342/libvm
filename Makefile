@@ -79,7 +79,22 @@ crt: $(CRT_EXE)
 $(CRT_EXE): $(CRT_OBJS)
 	$(CC) $(CFLAGS) -o $@ $(CRT_OBJS) $(LIBS) $(LDFLAGS)
 
-test: all
+# Build all tests (or a single one with TEST=<dir name>)
+tests-build:
+	@set -e; \
+	if [ -n "$(TEST)" ]; then \
+	  echo "Building tests/$(TEST)..."; \
+	  $(MAKE) -C tests/$(TEST); \
+	else \
+	  for d in $(TEST_DIRS); do \
+	    if [ -d $$d ] && [ -f $$d/Makefile ]; then \
+	      echo "Building $$d..."; \
+	      $(MAKE) -C $$d; \
+	    fi; \
+	  done; \
+	fi
+
+test: all tests-build
 	python run_tests.py
 
 maxclean: clean

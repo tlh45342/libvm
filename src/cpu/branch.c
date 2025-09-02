@@ -44,3 +44,12 @@ void handle_bx(uint32_t instr) {
     uint32_t tgt = cpu.r[rm];
     cpu.npc      = tgt & ~1u;                    // align to ARM
 }
+
+void handle_blx_reg(uint32_t instr) {
+    uint8_t cond = (instr >> 28) & 0xF;
+    if (cond != 0xF && !evaluate_condition(cond)) return;
+    uint32_t A = cpu.r[15];
+    uint32_t tgt = cpu.r[instr & 0xF];
+    cpu.r[14] = A + 4;
+    cpu.npc   = tgt & ~1u;   // stay ARM
+}

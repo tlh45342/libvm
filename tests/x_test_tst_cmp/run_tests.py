@@ -4,7 +4,7 @@ import sys
 
 VM = "arm-vm.exe"
 
-TEST_NAME = "test_cmp"
+TEST_NAME = "test_tst_cmp"
 
 CHECKS = [
     # setup / config
