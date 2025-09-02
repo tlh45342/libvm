@@ -2,7 +2,7 @@ AS = arm-none-eabi-as
 LD = arm-none-eabi-ld
 OBJCOPY = arm-none-eabi-objcopy
 
-TARGET = test_bfi
+TARGET = test_cmp
 ENTRY  = 0x8000
 
 all: $(TARGET).bin
@@ -21,3 +21,6 @@ test:
 
 clean:
 	rm -f *.o *.elf *.bin *.log
+	
+objdump:
+	arm-none-eabi-objdump -d $(TARGET).elf

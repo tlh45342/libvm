@@ -50,6 +50,8 @@ SRCS_HW = \
 SRCS = $(SRCS_CORE) $(SRCS_CPU) $(SRCS_HW)
 OBJS = $(SRCS:.c=.o)
 
+TEST_DIRS := $(wildcard tests/*)
+
 .PHONY: all clean install test crt
 
 all: $(EXE_FILE)
@@ -79,3 +81,11 @@ $(CRT_EXE): $(CRT_OBJS)
 
 test: all
 	python run_tests.py
+
+maxclean: clean
+	@for d in $(TEST_DIRS); do \
+	  if [ -d $$d ]; then \
+	    echo "Cleaning $$d..."; \
+	    $(MAKE) -C $$d clean; \
+	  fi; \
+	done
