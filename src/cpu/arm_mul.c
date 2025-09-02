@@ -99,3 +99,40 @@ void handle_smlal(uint32_t instr) {
     cpu.r[RdHi] = (uint32_t)((uint64_t)res >> 32);
     if (S) set_nz_64((uint64_t)res);
 }
+
+void handle_mul(uint32_t instr) {
+    uint32_t S  = (instr >> 20) & 1u;
+    uint32_t Rd = (instr >> 16) & 0xFu;    // Rd
+    uint32_t Rn = (instr >> 12) & 0xFu;    // must be 0 in MUL encoding
+    uint32_t Rs = (instr >> 8)  & 0xFu;    // Rs
+    uint32_t Rm =  instr        & 0xFu;    // Rm
+
+    (void)Rn; // MUL ignores Rn (architecturally 0000)
+
+    uint32_t res = cpu.r[Rm] * cpu.r[Rs];
+    cpu.r[Rd] = res;
+
+    if (S) {
+        cpu.cpsr = (cpu.cpsr & 0x3FFFFFFFu) |
+                   (res & 0x80000000u)      |      // N
+                   ((res == 0) ? 0x40000000u : 0); // Z
+        // C and V are UNPREDICTABLE for MUL/MLA — leave unchanged
+    }
+}
+
+void handle_mla(uint32_t instr) {
+    uint32_t S  = (instr >> 20) & 1u;
+    uint32_t Rd = (instr >> 16) & 0xFu;    // Rd
+    uint32_t Rn = (instr >> 12) & 0xFu;    // Rn (accumulate)
+    uint32_t Rs = (instr >> 8)  & 0xFu;    // Rs
+    uint32_t Rm =  instr        & 0xFu;    // Rm
+
+    uint32_t res = cpu.r[Rm] * cpu.r[Rs] + cpu.r[Rn];
+    cpu.r[Rd] = res;
+
+    if (S) {
+        cpu.cpsr = (cpu.cpsr & 0x3FFFFFFFu) |
+                   (res & 0x80000000u) |
+                   ((res == 0) ? 0x40000000u : 0);
+    }
+}

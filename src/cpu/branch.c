@@ -53,3 +53,20 @@ void handle_blx_reg(uint32_t instr) {
     cpu.r[14] = A + 4;
     cpu.npc   = tgt & ~1u;   // stay ARM
 }
+
+// ---- BLX (Branch with Link, immediate form) ----
+// Unconditional (cond=1111 in encoding). ARM-only VM: ignore Thumb request; clear bit0.
+// Encoding: 1111 101H imm24
+// Target = (A + 8) + sign_extend_26( (imm24 << 2) | (H << 1) )
+// LR = A + 4
+void handle_blx_imm(uint32_t instr) {
+    uint32_t A     = cpu.r[15];                  // address of this instruction
+    uint32_t imm24 =  instr        & 0x00FFFFFFu;
+    uint32_t H     = (instr >> 24) & 0x1u;
+
+    uint32_t off26 = (imm24 << 2) | (H << 1);    // build 26-bit offset
+    int32_t  off   = (int32_t)(off26 << 6) >> 6; // sign-extend from 26 bits
+
+    cpu.r[14] = A + 4;                           // LR = next instruction
+    cpu.npc   = ((A + 8) + (uint32_t)off) & ~1u; // stay ARM: clear bit0
+}

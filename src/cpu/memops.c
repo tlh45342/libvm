@@ -22,6 +22,30 @@ static inline void write_pc_via_npc(uint32_t new_pc) {
     cpu.npc = new_pc & ~3u;     // keep ARM aligned
 }
 
+// Compute effective address for extra load/store (halfword/signed family).
+static inline uint32_t extra_addr(uint32_t instr,
+                                  uint32_t base,
+                                  uint32_t *new_base_out,
+                                  bool *do_wb_out) {
+    uint32_t P = (instr >> 24) & 1u;   // pre/post
+    uint32_t U = (instr >> 23) & 1u;   // up/down
+    uint32_t I = (instr >> 22) & 1u;   // imm/reg
+    uint32_t W = (instr >> 21) & 1u;   // writeback
+
+    // imm8 = bits [11:8]|[3:0]
+    uint32_t imm8 = ((instr >> 4) & 0xF0u) | (instr & 0x0Fu);
+    uint32_t off  = I ? imm8 : addr_read_reg(instr & 0xFu); // Rm as *source* (PC=>PC+8)
+    int32_t  delta = U ? (int32_t)off : -(int32_t)off;
+
+    uint32_t ea       = P ? (uint32_t)((int32_t)base + delta) : base; // effective address
+    uint32_t new_base = (uint32_t)((int32_t)base + delta);            // base after update
+
+    if (new_base_out) *new_base_out = new_base;
+    if (do_wb_out)    *do_wb_out    = (bool)(W || !P); // post-index => always wb
+
+    return ea;
+}
+
 // -----------------------------------------------------------------------------
 // STR / LDR byte/word, LDM/STM, POP/POP{..,pc}, LDR(literal), LDRD/STRD
 // -----------------------------------------------------------------------------
@@ -72,49 +96,25 @@ void handle_strb_preimm(uint32_t instr) {
                    up ? "inc" : "dec", addr, rd, val);
 }
 
+// STM
 void handle_stm(uint32_t instr) {
-    uint32_t rn      = (instr >> 16) & 0xF;
-    uint32_t reglist = instr & 0xFFFF;
-    bool write_back  = ((instr >> 21) & 1u) != 0;
+    uint8_t  Rn  = (instr >> 16) & 0xFu;
+    uint32_t list=  instr        & 0xFFFFu;
+    uint32_t P   = (instr >> 24) & 1u;
+    uint32_t U   = (instr >> 23) & 1u;
+    uint32_t W   = (instr >> 21) & 1u;
 
-    uint32_t base = addr_read_reg(rn);
-    int count = __builtin_popcount(reglist);
-    uint32_t addr = base - count * 4;  // STMDB/STMFD (per your current form)
+    uint32_t base = addr_read_reg(Rn);                 // PC as source => PC+8
+    uint32_t addr = base;
 
-    for (int i = 0; i < 16; i++) {
-        if (reglist & (1u << i)) {
-            uint32_t value = cpu.r[i];
-            if (debug_flags & DBG_MEM_WRITE)
-                log_printf("[STR] mem[0x%08x] <= 0x%08x\n", addr, value);
-            mem_write32(addr, value);
-            addr += 4;
+    for (uint32_t r = 0; r <= 15; ++r) {
+        if ((list >> r) & 1u) {
+            if (P) addr += U ? 4u : (uint32_t)-4;      // pre-index
+            mem_write32(addr, cpu.r[r]);
+            if (!P) addr += U ? 4u : (uint32_t)-4;     // post-index
         }
     }
-    if (write_back) cpu.r[rn] = base - count * 4;
-}
-
-void handle_ldm(uint32_t instr) {
-    uint32_t rn      = (instr >> 16) & 0xF;
-    uint32_t reglist = instr & 0xFFFF;
-    bool write_back  = ((instr >> 21) & 1u) != 0;
-
-    uint32_t addr = addr_read_reg(rn);
-
-    for (int i = 0; i < 16; i++) {
-        if (reglist & (1u << i)) {
-            uint32_t val = mem_read32(addr);
-            if (i == 15) {
-                write_pc_via_npc(val);
-            } else {
-                cpu.r[i] = val;
-            }
-            if (debug_flags & DBG_MEM_READ)
-                log_printf("[LDM] r%d%s <= mem[0x%08X] => 0x%08X\n",
-                           i, (i==15?"(pc via npc)":""), addr, val);
-            addr += 4;
-        }
-    }
-    if (write_back) cpu.r[rn] = addr;
+    if (W) cpu.r[Rn] = addr;                            // writeback
 }
 
 void handle_strb_postimm(uint32_t instr) {
@@ -571,4 +571,203 @@ void handle_ldrb_reg_shift(uint32_t instr) {
         log_printf("[LDRB reg/shift] r%u = mem8[0x%08X] => 0x%02X  (r%d %c= %s #%u%s)\n",
                    rd, addr, val, rn, U?'+':'-', S[stype], sh_imm, (W||!P)?" wb":"");
     }
+}
+
+// STRH — store halfword (zero top 16 bits of data)
+// STRH — store halfword (little-endian)
+void handle_strh(uint32_t instr) {
+    uint8_t  Rn = (instr >> 16) & 0xFu;
+    uint8_t  Rd = (instr >> 12) & 0xFu;
+    uint32_t base = cpu.r[Rn];
+
+    uint32_t new_base; bool wb;
+    uint32_t addr = extra_addr(instr, base, &new_base, &wb);
+
+    uint16_t v = (uint16_t)(cpu.r[Rd] & 0xFFFFu);
+    mem_write8(addr + 0, (uint8_t)(v & 0xFFu));
+    mem_write8(addr + 1, (uint8_t)(v >> 8));
+
+    if (wb) cpu.r[Rn] = new_base;
+}
+
+// LDRH — load halfword (zero-extend)
+void handle_ldrh(uint32_t instr) {
+    uint8_t  Rn = (instr >> 16) & 0xFu;
+    uint8_t  Rd = (instr >> 12) & 0xFu;
+    uint32_t base = cpu.r[Rn];
+
+    uint32_t new_base; bool wb;
+    uint32_t addr = extra_addr(instr, base, &new_base, &wb);
+
+    uint16_t v = (uint16_t)((uint16_t)mem_read8(addr + 0)
+                           | ((uint16_t)mem_read8(addr + 1) << 8));
+    cpu.r[Rd] = (uint32_t)v;
+
+    if (wb) cpu.r[Rn] = new_base;
+}
+
+// LDRSB — load signed byte
+void handle_ldrsb(uint32_t instr) {
+    uint8_t  Rn = (instr >> 16) & 0xFu;
+    uint8_t  Rd = (instr >> 12) & 0xFu;
+    uint32_t base = cpu.r[Rn];
+
+    uint32_t new_base; bool wb;
+    uint32_t addr = extra_addr(instr, base, &new_base, &wb);
+
+    int8_t sb = (int8_t)mem_read8(addr);
+    cpu.r[Rd] = (uint32_t)(int32_t)sb;
+
+    if (wb) cpu.r[Rn] = new_base;
+}
+
+// LDRSH — load signed halfword
+void handle_ldrsh(uint32_t instr) {
+    uint8_t  Rn = (instr >> 16) & 0xFu;
+    uint8_t  Rd = (instr >> 12) & 0xFu;
+    uint32_t base = cpu.r[Rn];
+
+    uint32_t new_base; bool wb;
+    uint32_t addr = extra_addr(instr, base, &new_base, &wb);
+
+    uint16_t raw = (uint16_t)((uint16_t)mem_read8(addr + 0)
+                             | ((uint16_t)mem_read8(addr + 1) << 8));
+    int16_t sh = (int16_t)raw;
+    cpu.r[Rd] = (uint32_t)(int32_t)sh;
+
+    if (wb) cpu.r[Rn] = new_base;
+}
+
+static inline uint32_t reglist_count(uint32_t list) {
+    // builtin popcount if you prefer; this is portable
+    uint32_t c = 0;
+    while (list) { list &= (list - 1); ++c; }
+    return c;
+}
+
+// Generic LDM/STM covering IA/IB/DA/DB, with P/U/W respected.
+// S bit (user-mode banked or PSR restore) is TODO for now.
+// LDM
+void handle_ldm(uint32_t instr) {
+    uint8_t  Rn  = (instr >> 16) & 0xFu;
+    uint32_t list=  instr        & 0xFFFFu;
+    uint32_t P   = (instr >> 24) & 1u;
+    uint32_t U   = (instr >> 23) & 1u;
+    uint32_t W   = (instr >> 21) & 1u;
+    // uint32_t S = (instr >> 22) & 1u; // TODO
+
+    uint32_t base = addr_read_reg(Rn);         // PC as source => PC+8
+    uint32_t addr = base;
+
+    for (uint32_t r = 0; r <= 15; ++r) {
+        if ((list >> r) & 1u) {
+            if (P) addr += U ? 4u : (uint32_t)-4;      // pre-index
+            uint32_t val = mem_read32(addr);
+            if (r == 15) {
+                write_pc_via_npc(val);                 // npc for PC
+            } else {
+                cpu.r[r] = val;
+            }
+            if (!P) addr += U ? 4u : (uint32_t)-4;     // post-index
+        }
+    }
+    if (W) cpu.r[Rn] = addr;                            // writeback
+}
+
+// ---- STR (word) — register offset addressing (AM2, bit25=1, B=0, L=0) ----
+void handle_str_regoffset(uint32_t instr) {
+    // Must be AM2 reg-offset (I=1) with imm shift (bit4==0), B=0, L=0
+    if (((instr >> 25) & 1u) == 0) return;
+    if (((instr >> 22) & 1u) != 0) return; // B must be 0 (word)
+    if (((instr >> 20) & 1u) != 0) return; // L must be 0 (store)
+    if (((instr >>  4) & 1u) != 0) return; // bit4 must be 0 (imm shift)
+
+    uint32_t P = (instr >> 24) & 1u;
+    uint32_t U = (instr >> 23) & 1u;
+    uint32_t W = (instr >> 21) & 1u;
+
+    uint32_t Rn = (instr >> 16) & 0xFu;
+    uint32_t Rd = (instr >> 12) & 0xFu;
+    uint32_t Rm =  instr        & 0xFu;
+
+    uint32_t base   = addr_read_reg(Rn);
+    uint32_t rmval  = addr_read_reg(Rm);
+    uint32_t offset = am2_shift(instr, rmval);
+    uint32_t delta  = U ? offset : (uint32_t)(-((int32_t)offset));
+    uint32_t addr   = P ? (base + delta) : base;
+
+    mem_write32(addr, cpu.r[Rd]);
+    if (W || !P) cpu.r[Rn] = base + delta;
+
+    if (debug_flags & DBG_MEM_WRITE) {
+        log_printf("[STR reg-off] [0x%08X] <= r%u=0x%08X%s\n",
+                   addr, Rd, cpu.r[Rd], (W||!P)?" wb":"");
+    }
+}
+
+// ---- STRB (byte) — reg offset (imm shift) pre/post, W ----
+void handle_strb_reg_shift(uint32_t instr) {
+    // AM2: I=1, B=1, L=0, bit4==0 (imm shift)
+    if (((instr >> 25) & 1u) == 0) return; // I=1
+    if (((instr >> 22) & 1u) == 0) return; // B=1
+    if (((instr >> 20) & 1u) != 0) return; // L=0
+    if (((instr >>  4) & 1u) != 0) return; // imm shift form
+
+    uint32_t rn    = (instr >> 16) & 0xFu;
+    uint32_t rd    = (instr >> 12) & 0xFu;
+    uint32_t rm    =  instr        & 0xFu;
+
+    uint32_t P     = (instr >> 24) & 1u;
+    uint32_t U     = (instr >> 23) & 1u;
+    uint32_t W     = (instr >> 21) & 1u;
+
+    uint32_t stype = (instr >> 5) & 0x3u;
+    uint32_t shimm = (instr >> 7) & 0x1Fu;
+
+    uint32_t base   = addr_read_reg(rn);
+    uint32_t off    = am2_shift_imm(addr_read_reg(rm), stype, shimm);
+    uint32_t delta  = U ? off : (uint32_t)(-((int32_t)off));
+    uint32_t addr   = P ? (base + delta) : base;
+    uint32_t new_rn = base + delta;
+
+    uint8_t  val = (uint8_t)(cpu.r[rd] & 0xFFu);
+    mem_write8(addr, val);
+    if (W || !P) cpu.r[rn] = new_rn;
+
+    if (debug_flags & DBG_MEM_WRITE) {
+        static const char* S[4] = {"LSL","LSR","ASR","ROR"};
+        log_printf("[STRB reg/shift] [0x%08X] <= r%u(0x%02X)  (r%d %c= %s #%u%s)\n",
+                   addr, rd, val, rn, U?'+':'-', S[stype], shimm, (W||!P)?" wb":"");
+    }
+}
+
+// ---- SWP / SWPB (uniprocessor semantics) ----
+// SWP  Rd, Rm, [Rn]    ; atomically: tmp=[Rn]; [Rn]=Rm; Rd=tmp
+void handle_swp(uint32_t instr) {
+    uint32_t Rn = (instr >> 16) & 0xFu;
+    uint32_t Rd = (instr >> 12) & 0xFu;
+    uint32_t Rm =  instr        & 0xFu;
+
+    uint32_t addr = addr_read_reg(Rn);
+    uint32_t old  = mem_read32(addr);
+    mem_write32(addr, cpu.r[Rm]);
+    if (Rd != 15u) cpu.r[Rd] = old;  // Rd==PC: ignore (keep VM robust)
+    if (debug_flags & DBG_MEM_WRITE)
+        log_printf("[SWP] r%u<=0x%08X; [0x%08X]<=r%u(0x%08X)\n",
+                   Rd, old, addr, Rm, cpu.r[Rm]);
+}
+
+// SWPB byte variant
+void handle_swpb(uint32_t instr) {
+    uint32_t Rn = (instr >> 16) & 0xFu;
+    uint32_t Rd = (instr >> 12) & 0xFu;
+    uint32_t Rm =  instr        & 0xFu;
+
+    uint32_t addr = addr_read_reg(Rn);
+    uint8_t  old  = mem_read8(addr);
+    mem_write8(addr, (uint8_t)(cpu.r[Rm] & 0xFFu));
+    if (Rd != 15u) cpu.r[Rd] = (uint32_t)old;
+    if (debug_flags & DBG_MEM_WRITE)
+        log_printf("[SWPB] r%u<=0x%02X; [0x%08X]<=r%u(0x%02X)\n",
+                   Rd, old, addr, Rm, (unsigned)(cpu.r[Rm] & 0xFFu));
 }

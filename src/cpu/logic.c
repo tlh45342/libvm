@@ -240,3 +240,66 @@ void handle_movt(uint32_t instr) {
 void handle_mov_imm(uint32_t instr) {
     handle_mov(instr);
 }
+
+// Rd==PC is UNPREDICTABLE for these; keep VM robust by ignoring the write.
+#define IGNORE_IF_PC(rd) do { if ((rd) == 15u) return; } while(0)
+
+// ---------------- Byte/half reversals ----------------
+void handle_rev(uint32_t instr) {
+    uint32_t Rd = (instr >> 12) & 0xFu;
+    uint32_t Rm =  instr        & 0xFu;
+    IGNORE_IF_PC(Rd);
+    uint32_t x = cpu.r[Rm];
+#if defined(__GNUC__) || defined(__clang__)
+    cpu.r[Rd] = __builtin_bswap32(x);
+#else
+    cpu.r[Rd] = (x >> 24) | ((x >> 8) & 0x0000FF00u)
+              | ((x << 8) & 0x00FF0000u) | (x << 24);
+#endif
+}
+
+void handle_rev16(uint32_t instr) {
+    uint32_t Rd = (instr >> 12) & 0xFu;
+    uint32_t Rm =  instr        & 0xFu;
+    IGNORE_IF_PC(Rd);
+    uint32_t x = cpu.r[Rm];
+    cpu.r[Rd] = ((x & 0x00FF00FFu) << 8) | ((x & 0xFF00FF00u) >> 8);
+}
+
+void handle_revsh(uint32_t instr) {
+    uint32_t Rd = (instr >> 12) & 0xFu;
+    uint32_t Rm =  instr        & 0xFu;
+    IGNORE_IF_PC(Rd);
+    uint32_t x = cpu.r[Rm];
+    uint32_t low = ((x & 0xFFu) << 8) | ((x >> 8) & 0xFFu);
+    cpu.r[Rd] = (uint32_t)(int32_t)(int16_t)low;  // sign-extend
+}
+
+// ---------------- Base extend (no rotate) ----------------
+void handle_uxtb(uint32_t instr) {
+    uint32_t Rd = (instr >> 12) & 0xFu;
+    uint32_t Rm =  instr        & 0xFu;
+    IGNORE_IF_PC(Rd);
+    cpu.r[Rd] = cpu.r[Rm] & 0xFFu;
+}
+
+void handle_uxth(uint32_t instr) {
+    uint32_t Rd = (instr >> 12) & 0xFu;
+    uint32_t Rm =  instr        & 0xFu;
+    IGNORE_IF_PC(Rd);
+    cpu.r[Rd] = cpu.r[Rm] & 0xFFFFu;
+}
+
+void handle_sxtb(uint32_t instr) {
+    uint32_t Rd = (instr >> 12) & 0xFu;
+    uint32_t Rm =  instr        & 0xFu;
+    IGNORE_IF_PC(Rd);
+    cpu.r[Rd] = (uint32_t)(int32_t)(int8_t)(cpu.r[Rm] & 0xFFu);
+}
+
+void handle_sxth(uint32_t instr) {
+    uint32_t Rd = (instr >> 12) & 0xFu;
+    uint32_t Rm =  instr        & 0xFu;
+    IGNORE_IF_PC(Rd);
+    cpu.r[Rd] = (uint32_t)(int32_t)(int16_t)(cpu.r[Rm] & 0xFFFFu);
+}

@@ -24,3 +24,14 @@ void handle_cmn_imm(uint32_t instr);
 void handle_movw(uint32_t instr);    // MOVW (imm16 -> low half; upper half zeroed)
 void handle_movt(uint32_t instr);    // MOVT (imm16 -> upper half; low half preserved)
 void handle_mov_imm(uint32_t instr); // DP MOV immediate fast path (same semantics as handle_mov)
+
+// Byte/half reversals
+void handle_rev(uint32_t instr);
+void handle_rev16(uint32_t instr);
+void handle_revsh(uint32_t instr);
+
+// Extend (no-rotate base forms)
+void handle_uxtb(uint32_t instr);
+void handle_uxth(uint32_t instr);
+void handle_sxtb(uint32_t instr);
+void handle_sxth(uint32_t instr);

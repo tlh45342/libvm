@@ -68,6 +68,48 @@ static const k12_entry K12_TABLE[] = {
 
 	{ 0x0F00u, 0x0100u, 0xFF00F000u, 0xF1000000u, true, handle_cps, "CPS" },
 
+	// MSR (register -> CPSR fields): instr & 0x0FBF0FFF == 0x0120F000
+	{ 0x0FFFu, 0x0120u, 0x0FBF0FFFu, 0x0120F000u, true, handle_msr, "MSR reg->CPSR" },
+
+	// MSR (immediate -> CPSR fields): instr & 0x0FBF0F00 == 0x0320F000
+	{ 0x0FFFu, 0x0320u, 0x0FBF0F00u, 0x0320F000u, true, handle_msr, "MSR imm->CPSR" },
+
+	// BLX (immediate) — unconditional, match top bits FAxxxxxx
+	{ 0x0E00u, 0x0A00u, 0xFE000000u, 0xFA000000u, false, handle_blx_imm, "BLX (imm)" },
+
+	// MUL/MLA — 000000 A S Rd Rn Rs 1001 Rm
+	// Distinguish with xmask: include 27..22, 21(A), 7..4; and for MUL also Rn==0000
+	{ 0x0E0Fu, 0x0009u, 0x0FEF00F0u, 0x00000090u, true, handle_mul, "MUL" }, // A=0, Rn=0000
+	{ 0x0E0Fu, 0x0009u, 0x0FE000F0u, 0x00200090u, true, handle_mla, "MLA" }, // A=1
+
+	// PUSH  == STMDB sp!, {reglist}   (cond | 1001 | 0010 | 1101 | reglist)
+	{ 0x0F10u, 0x0800u, 0x0FFF0000u, 0x092D0000u, true, handle_stm, "PUSH (STMDB sp!)" },
+
+	// POP   == LDMIA sp!, {reglist}   (cond | 1000 | 1011 | 1101 | reglist)
+	{ 0x0F10u, 0x0810u, 0x0FFF0000u, 0x08BD0000u, true, handle_ldm, "POP (LDMIA sp!)" },
+
+	// LDM/STM — op1=0b100; disambiguate with L bit (bit20 contained in key12’s op2)
+	// Mask op1 plus L bit in op2 (5-bit field)
+	// NEW (mask op1 and the L bit only; ignore P)
+	{ 0x0E10u, 0x0810u, 0, 0, true, handle_ldm, "LDM" },
+	{ 0x0E10u, 0x0800u, 0, 0, true, handle_stm, "STM" },
+
+	// Extra load/store halfword/signed — op3 nibble disambiguates:
+	// 0xB = halfword, 0xD = signed byte, 0xF = signed half
+	// xmask32 0x00500000 tests I(22) and L(20) simultaneously.
+	// STRH (imm): I=1,L=0 ; STRH (reg): I=0,L=0
+	{ 0x0E0Fu, 0x000Bu, 0x00500000u, 0x00400000u, true, handle_strh,  "STRH(imm)" },
+	{ 0x0E0Fu, 0x000Bu, 0x00500000u, 0x00000000u, true, handle_strh,  "STRH(reg)" },
+
+	// LDRH (imm/reg): I=?, L=1
+	{ 0x0E0Fu, 0x000Bu, 0x00500000u, 0x00100000u, true, handle_ldrh,  "LDRH"      },
+
+	// LDRSB
+	{ 0x0E0Fu, 0x000Du, 0x00100000u, 0x00100000u, true, handle_ldrsb, "LDRSB"     },
+
+	// LDRSH
+	{ 0x0E0Fu, 0x000Fu, 0x00100000u, 0x00100000u, true, handle_ldrsh, "LDRSH"     },
+
 	// BX / BLX(reg) patterns (A32)
 	// key12(BX  Rm) = 0x0121 ; instr & 0x0FFFFFF0 == 0x012FFF10
 	// key12(BLX Rm) = 0x0123 ; instr & 0x0FFFFFF0 == 0x012FFF30
@@ -77,6 +119,35 @@ static const k12_entry K12_TABLE[] = {
     // ---- Wide moves (exact patterns) ----
     { 0x0F00u, 0x0300u, 0x0FF00000u, 0x03000000u, true, handle_movw, "MOVW" },
     { 0x0F00u, 0x0300u, 0x0FF00000u, 0x03400000u, true, handle_movt, "MOVT" },
+
+// STR (word) reg-offset (I=1,B=0,L=0, bit4==0)
+{ 0x0E50u, 0x0600u, 0, 0, true, handle_str_regoffset,  "STR reg-offset" },
+
+// STRB reg-offset with imm shift (mirror LDRB split)
+{ 0x0F7Fu, 0x0740u, 0, 0, true, handle_strb_reg_shift, "STRB reg LSL#0" },
+{ 0x0F71u, 0x0740u, 0, 0, true, handle_strb_reg_shift, "STRB reg imm-shift" },
+
+// SWP / SWPB: (instr & 0x0FB00FF0) == 0x01000090 (word) / 0x01400090 (byte)
+{ 0x0E0Fu, 0x0009u, 0x0FB00FF0u, 0x01000090u, true, handle_swp,  "SWP"  },
+{ 0x0E0Fu, 0x0009u, 0x0FB00FF0u, 0x01400090u, true, handle_swpb, "SWPB" },
+
+// MRS (CPSR) already present:
+// { 0x0FBFu, 0x0100u, 0x0FBF0FFFu, 0x010F0000u, true,  handle_mrs, "MRS" },
+
+// MRS (SPSR)
+{ 0x0FBFu, 0x0100u, 0x0FBF0FFFu, 0x014F0000u, true,  handle_mrs, "MRS (SPSR)" },
+
+// MSR reg->CPSR already present:
+// { 0x0FFFu, 0x0120u, 0x0FBF0FFFu, 0x0120F000u, true, handle_msr, "MSR reg->CPSR" },
+// MSR imm->CPSR already present:
+// { 0x0FFFu, 0x0320u, 0x0FBF0F00u, 0x0320F000u, true, handle_msr, "MSR imm->CPSR" },
+
+// MSR reg->SPSR  (same handler; xvalue has bit22 set)
+{ 0x0FFFu, 0x0120u, 0x0FBF0FFFu, 0x0160F000u, true, handle_msr, "MSR reg->SPSR" },
+
+// MSR imm->SPSR
+{ 0x0FFFu, 0x0320u, 0x0FBF0F00u, 0x0360F000u, true, handle_msr, "MSR imm->SPSR" },
+
 
     // ---- Doubleword transfers (final: correct for your toolchain) ----
     // key12 gate: op1==0 (bits 27..25) AND op3==0xD/0xF (bits 7..4)
@@ -143,7 +214,6 @@ static const k12_entry K12_TABLE[] = {
     { 0x0FFFu, 0x0490u, 0x0FFFF000u, 0x049DF000u, true, handle_pop_pc,     "POP{..,pc}" },
 
     // ---- Branch family ----
-    { 0x0FFFu, 0x0121u, 0, 0, true, handle_bx, "BX" },
     { 0x0F00u, 0x0A00u, 0, 0, true, handle_b,  "B"  },
     { 0x0F00u, 0x0B00u, 0, 0, true, handle_bl, "BL" },
 

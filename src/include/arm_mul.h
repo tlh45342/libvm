@@ -6,3 +6,5 @@ void handle_umull(uint32_t instr);
 void handle_umlal(uint32_t instr);
 void handle_smull(uint32_t instr);
 void handle_smlal(uint32_t instr);
+void handle_mul(uint32_t instr);
+void handle_mla(uint32_t instr);

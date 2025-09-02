@@ -61,7 +61,8 @@ r15 <= 0x00008000
 00008034:       F10A0093        .word 0xF10A0093
 [TRACE] PC=0x00008034 Instr=0xF10A0093
 [K12] key=0x109 op1=0 op2=16 op3=9
-[K12] CPS match (key=0x109)
+[K12] SWP match (key=0x109)
+[SWP] r0<=0x00000000; [0x00000000]<=r3(0x00000140)
 00008038:       E10F4000        .word 0xE10F4000
 [TRACE] PC=0x00008038 Instr=0xE10F4000
 [K12] key=0x100 op1=0 op2=16 op3=0
@@ -70,7 +71,7 @@ r15 <= 0x00008000
 [TRACE] PC=0x0000803C Instr=0xE5864010
 [K12] key=0x581 op1=2 op2=24 op3=1
 [K12] STR  pre-imm match (key=0x581)
-[STR pre-inc imm] mem[0x00100010] <= r4 (0x00000153)
+[STR pre-inc imm] mem[0x00100010] <= r4 (0x00000140)
 00008040:       E1212374        .word 0xE1212374
 [TRACE] PC=0x00008040 Instr=0xE1212374
 [K12] key=0x127 op1=0 op2=18 op3=7
