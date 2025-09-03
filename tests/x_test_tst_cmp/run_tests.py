@@ -7,23 +7,24 @@ VM = "arm-vm.exe"
 TEST_NAME = "test_tst_cmp"
 
 CHECKS = [
-    # setup / config
-    ("Debug enabled",        "[DEBUG] debug_flags set to 0x000003FF"),
-    ("Loaded image",         "[LOAD] test_barriers.bin @ 0x00008000"),
-    ("PC start",             "r15 <= 0x00008000"),
-
-    # instruction decode lines
-    ("DMB shown",            "00008000:       F57FF05F        dmb sy"),
-    ("DSB shown",            "00008004:       F57FF04F        dsb sy"),
-    ("ISB shown",            "00008008:       F57FF06F        isb sy"),
-
-    # graceful stop
-    ("DEADBEEF trap",        "0000800C:       DEADBEEF"),
+    # instruction stream (labels include context; matches use addr+word only)
+    ("MOV r0,#0xF0           @8000", "00008000:       E3A000F0"),
+    ("MOVT r0,#0xF0F0        @8004", "00008004:       E34F00F0"),
+    ("TST r0,#0xF            @8008", "00008008:       E310000F"),
+    ("MRS CPSR -> r4         @800C", "0000800C:       E10F4000"),
+    ("TEQ (r0,...)           @8010", "00008010:       E1300000"),
+    ("MRS CPSR -> r5         @8014", "00008014:       E10F5000"),
+    ("MOV r1,#1              @8018", "00008018:       E3A01001"),
+    ("CMP r1,#1              @801C", "0000801C:       E3510001"),
+    ("MRS CPSR -> r6         @8020", "00008020:       E10F6000"),
+    ("CMP r1,#2              @8024", "00008024:       E3510002"),
+    ("MRS CPSR -> r7         @8028", "00008028:       E10F7000"),
+    ("DEADBEEF trap          @802C", "0000802C:       DEADBEEF"),
 
     # final machine state
-    ("Final PC",             "r15 = 0x0000800C"),
-    ("Final CPSR",           "CPSR = 0x00000000"),
-    ("Cycle count",          "cycle=4"),
+    ("Final PC",                 "r15 = 0x0000802C"),
+    ("Final CPSR",               "CPSR = 0x80000000"),
+    ("Cycle count",              "cycle=12"),
 ]
 
 

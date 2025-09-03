@@ -1,4 +1,8 @@
- .text
+ .arch armv7-a
+    .arm
+    .text
+    .global _start
+_start:
     // r10 = 0x00100000
     mov   r10, #0
     movt  r10, #0x0010

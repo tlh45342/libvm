@@ -330,7 +330,6 @@ r15 <= 0x00008000
 [TRACE] PC=0x0000806C Instr=0xE5801000
 [K12] key=0x580 op1=2 op2=24 op3=0
 [K12] STR  pre-imm match (key=0x580)
-[STR pre-inc imm] mem[0x00100000] <= r1 (0x00000000)
 00008070:       EF000042        .word 0xEF000042
 [TRACE] PC=0x00008070 Instr=0xEF000042
 [K12] key=0xF04 op1=7 op2=16 op3=4
@@ -362,7 +361,6 @@ r15 <= 0x00008000
 [TRACE] PC=0x00008098 Instr=0xE5823000
 [K12] key=0x580 op1=2 op2=24 op3=0
 [K12] STR  pre-imm match (key=0x580)
-[STR pre-inc imm] mem[0x00100000] <= r3 (0xDEADBEEF)
 0000809C:       E1B0F00E        .word 0xE1B0F00E
 [TRACE] PC=0x0000809C Instr=0xE1B0F00E
 [K12] key=0x1B0 op1=0 op2=27 op3=0
@@ -380,7 +378,6 @@ r15 <= 0x00008000
 [TRACE] PC=0x0000807C Instr=0xE5801000
 [K12] key=0x580 op1=2 op2=24 op3=0
 [K12] STR  pre-imm match (key=0x580)
-[STR pre-inc imm] mem[0x00100000] <= r1 (0x12345678)
 00008080:       DEADBEEF        .word 0xDEADBEEF
 [TRACE] PC=0x00008080 Instr=0xDEADBEEF
 [K12] key=0xEAE op1=7 op2=10 op3=14

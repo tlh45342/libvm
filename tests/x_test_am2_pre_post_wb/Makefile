@@ -2,7 +2,7 @@ AS = arm-none-eabi-as
 LD = arm-none-eabi-ld
 OBJCOPY = arm-none-eabi-objcopy
 
-TARGET = test_adr
+TARGET = test_am2_pre_post_wb
 ENTRY  = 0x8000
 
 all: $(TARGET).bin

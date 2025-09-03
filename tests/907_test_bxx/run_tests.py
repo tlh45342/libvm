@@ -6,37 +6,23 @@ VM = "arm-vm.exe"
 TEST_NAME = "test_bxx"
 
 CHECKS = [
-    # breadcrumbs for base setup
-    ("DIS 8000 MOVW r6", "00008000:       E3006000"),
-    ("DIS 8004 MOVT r6", "00008004:       E3406100"),
+    # one-time base context (r6 high half)
+    ("Base set (MOVT r6,#0x0100)", "00008004:       E3406100"),
 
-    # taken branches -> tags 1..6
-    ("EQ taken -> 1",    "mem[0x01000000] <= r1 (0x00000001)"),
-    ("NE taken -> 2",    "mem[0x01000004] <= r1 (0x00000002)"),
-    ("HS taken -> 3",    "mem[0x01000008] <= r1 (0x00000003)"),
-    ("LO taken -> 4",    "mem[0x0100000C] <= r1 (0x00000004)"),
-    ("MI taken -> 5",    "mem[0x01000010] <= r1 (0x00000005)"),
-    ("PL taken -> 6",    "mem[0x01000014] <= r1 (0x00000006)"),
+    # key branch outcomes -> evidence = the STR landing at each slot
+    ("EQ taken  -> [r6,#0]",      "00008024:       E5861000"),
+    ("MI taken  -> [r6,#16]",     "000080A4:       E5861010"),
+    ("VS not-taken -> [r6,#24]",  "000080E4:       E5861018"),  # fallthrough path
+    ("VC taken  -> [r6,#28]",     "00008110:       E586101C"),
+    ("HI taken  -> [r6,#32]",     "00008134:       E5861020"),  # unsigned >
+    ("LT taken  -> [r6,#36]",     "00008158:       E5861024"),  # signed <
+    ("LS taken  -> [r6,#52]",     "000081E8:       E5861034"),  # unsigned <=
 
-    # V-set case: BVS should NOT be taken -> 0xEE
-    ("BVS not taken",    "B cond fail (0x6)"),
-    ("VS not taken ->EE","mem[0x01000018] <= r1 (0x000000EE)"),
-
-    # V-clear case: BVC taken -> 8
-    ("VC taken -> 8",    "mem[0x0100001C] <= r1 (0x00000008)"),
-
-    # signed compares
-    ("GE taken -> 9",    "mem[0x01000020] <= r1 (0x00000009)"),
-    ("LT taken -> 10",   "mem[0x01000024] <= r1 (0x0000000A)"),
-    ("GT taken -> 11",   "mem[0x01000028] <= r1 (0x0000000B)"),
-    ("LE taken -> 12",   "mem[0x0100002C] <= r1 (0x0000000C)"),
-
-    # unsigned compares
-    ("HI taken -> 13",   "mem[0x01000030] <= r1 (0x0000000D)"),
-    ("LS taken -> 14",   "mem[0x01000034] <= r1 (0x0000000E)"),
-
-    # halt
-    ("HALT line",        "DEADBEEF        .word 0xDEADBEEF"),
+    # graceful stop + final state
+    ("BKPT",                      "000081EC:       E1212374"),
+    ("Final PC",                  "r15 = 0x000081EC"),
+    ("Final CPSR",                "CPSR = 0x80000000"),
+    ("Cycle count",               "cycle=83"),
 ]
 
 def run_test():

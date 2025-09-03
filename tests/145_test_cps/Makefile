@@ -2,7 +2,7 @@ AS = arm-none-eabi-as
 LD = arm-none-eabi-ld
 OBJCOPY = arm-none-eabi-objcopy
 
-TARGET = test_adr
+TARGET = test_cps
 ENTRY  = 0x8000
 
 all: $(TARGET).bin
@@ -20,7 +20,4 @@ test:
 	python run_tests.py
 
 clean:
-	rm -f *.o *.elf *.bin *.log
-	
-objdump:
-	arm-none-eabi-objdump -d $(TARGET).elf
+	rm -f *.o *.elf *.bin

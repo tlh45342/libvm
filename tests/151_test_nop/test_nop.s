@@ -1,4 +1,4 @@
- .syntax unified
+    .syntax unified
     .arch armv7-a
     .text
     .global _start

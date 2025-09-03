@@ -14,6 +14,9 @@
 #include "cond.h"     // for evaluate_condition()
 #include "operand.h"
 
+// ---------- forward declaration ----------
+static inline uint32_t am2_shift_imm(uint32_t val, uint32_t stype, uint32_t sh_imm);
+
 // ---------- helpers ----------
 static inline uint32_t addr_read_reg(int r) {
     return arm_read_src_reg(r); // PC as source => PC+8 in ARM state
@@ -44,6 +47,52 @@ static inline uint32_t extra_addr(uint32_t instr,
     if (do_wb_out)    *do_wb_out    = (bool)(W || !P); // post-index => always wb
 
     return ea;
+}
+
+// AM2 address + writeback for single data transfers (word/byte).
+// Handles both imm12 (I=0) and reg-imm-shift (I=1 with bit4==0).
+// Inputs:
+//   instr: full 32-bit ARM instruction
+//   base : arm_read_src_reg(Rn) precomputed by caller (PC as source => PC+8)
+// Outputs:
+//   *ea_out      : effective address used for memory access
+//   *new_base_out: base after +/- offset
+//   *do_wb_out   : whether to perform writeback (W==1 or post-index)
+static inline void am2_addr_common(uint32_t instr,
+                                   uint32_t base,
+                                   uint32_t *ea_out,
+                                   uint32_t *new_base_out,
+                                   bool     *do_wb_out)
+{
+    uint32_t P = (instr >> 24) & 1u;   // pre/post
+    uint32_t U = (instr >> 23) & 1u;   // add/sub
+    uint32_t W = (instr >> 21) & 1u;   // writeback
+    uint32_t I = (instr >> 25) & 1u;   // imm/reg
+
+    uint32_t off;
+    if (!I) {
+        // imm12
+        off = instr & 0xFFFu;
+    } else {
+        // reg offset with imm shift (bit4==0 for this helper)
+        if ((instr & (1u << 4)) != 0) {
+            // caller shouldn’t route scaled-reg (bit4==1) here
+            off = 0;
+        } else {
+            uint32_t Rm    =  instr        & 0xFu;
+            uint32_t stype = (instr >> 5)  & 0x3u;   // LSL/LSR/ASR/ROR
+            uint32_t shimm = (instr >> 7)  & 0x1Fu;  // shift imm
+            off = am2_shift_imm(arm_read_src_reg(Rm), stype, shimm);
+        }
+    }
+
+    uint32_t delta    = U ? off : (uint32_t)(-((int32_t)off));
+    uint32_t new_base = base + delta;
+    uint32_t ea       = P ? new_base : base;
+
+    if (ea_out)       *ea_out       = ea;
+    if (new_base_out) *new_base_out = new_base;
+    if (do_wb_out)    *do_wb_out    = (bool)(W || !P); // post-index always writes back
 }
 
 // -----------------------------------------------------------------------------
@@ -135,18 +184,14 @@ void handle_strb_postimm(uint32_t instr) {
 void handle_str_preimm(uint32_t instr) {
     uint8_t rn = (instr >> 16) & 0xF;
     uint8_t rd = (instr >> 12) & 0xF;
-    uint32_t offset = instr & 0xFFF;
-    bool up  = (instr >> 23) & 1u;
-    bool pre = (instr >> 24) & 1u;
 
-    uint32_t base = addr_read_reg(rn);
-    uint32_t addr = pre ? (up ? base + offset : base - offset) : base;
+    uint32_t base = arm_read_src_reg(rn);
+    uint32_t addr, new_base;
+    bool wb;
+    am2_addr_common(instr, base, &addr, &new_base, &wb);
 
     mem_write32(addr, cpu.r[rd]);
-
-    if (debug_flags & DBG_INSTR)
-        log_printf("[STR pre-%s imm] mem[0x%08X] <= r%d (0x%08X)\n",
-                   up ? "inc" : "dec", addr, rd, cpu.r[rd]);
+    if (wb) cpu.r[rn] = new_base;
 }
 
 void handle_str_predec(uint32_t instr) {

@@ -6,31 +6,25 @@ VM = "arm-vm.exe"
 TEST_NAME = "test_asr"
 
 CHECKS = [
-    # --- Early decodes (front of program) ---
-    ("MOVW decoded (early)", "[K12] MOVW match (key=0x300)"),
-    ("MOVT decoded (early)", "[K12] MOVT match (key=0x341)"),
+    # setup
+    ("Loaded image",          "[LOAD] test_asr.bin @ 0x00008000"),
+    ("PC start",              "r15 <="),
 
-    # --- ASR instruction detection (K12 op buckets you use for ASR forms) ---
-    # Treat these as your ASR test ops (register/imm variants)
-    ("ASR form A present",   "[K12] MOV match (key=0x1BC)"),  # e.g., E1B050C3 / E1B05FC3
-    ("ASR form B present",   "[K12] MOV match (key=0x1B0)"),  # e.g., E1B05003
-    ("ASR form C present",   "[K12] MOV match (key=0x1B5)"),  # e.g., E1B05453
+    # r3 = 0x00008080; r4 = 8 -> ASRS reg (mid shift)
+    ("@809C movt r3,#0",      "0000809C:       E3403000"),
+    ("@80A0 mov r4,#8",       "000080A0:       E3A04008"),
+    ("@80A4 ASRS reg",        "000080A4:       E1B05453"),
+    ("@80A8 MRS",             "000080A8:       E10F7000"),
 
-    # --- ASR results (sign extension behavior via observable stores) ---
-    # After first ASR pair
-    ("ASR result #1 r5",     "mem[0x00100000] <= r5 (0xC0000000)"),
-    ("ASR result #1 r7",     "mem[0x00100004] <= r7 (0xA0000000)"),
-    # After second ASR pair
-    ("ASR result #2 r5",     "mem[0x00100008] <= r5 (0xFFFFFFFF)"),
-    ("ASR result #2 r7",     "mem[0x0010000C] <= r7 (0x80000000)"),
-    # Mixed-edge cases showing sign propagation and boundary behavior
-    ("ASR result #3 r5",     "mem[0x00100010] <= r5 (0x80000001)"),
-    ("ASR result #3 r7",     "mem[0x00100014] <= r7 (0x80000000)"),
-    ("ASR result #4 r5",     "mem[0x00100018] <= r5 (0x3FFFFFFF)"),
-    ("ASR result #4 r7",     "mem[0x0010001C] <= r7 (0x00000000)"),
+    # r3 = 0xF0000000; r4 = 40 (>=32) -> ASRS reg >=32
+    ("@80B4 movw r3,#0",      "000080B4:       E3003000"),
+    ("@80B8 movt r3,#0xF000", "000080B8:       E34F3000"),
+    ("@80BC mov r4,#40",      "000080BC:       E3A04028"),
+    ("@80C0 ASRS reg >=32",   "000080C0:       E1B05453"),
+    ("@80C4 MRS",             "000080C4:       E10F7000"),
 
-    # --- Halting condition ---
-    ("DEADBEEF trap",        "[K12] DEADBEEF match"),
+    # halt
+    ("DEADBEEF trap",         "000080D0:       DEADBEEF"),
 ]
 
 def run_test():

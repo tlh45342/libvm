@@ -4,43 +4,35 @@ import sys
 
 VM = "arm-vm.exe"
 
-TEST_NAME = "test_adc"
+TEST_NAME = "test_adr"
 
 CHECKS = [
-    # decodes
-    ("MOVW decoded",         "[K12] MOVW match (key=0x300)"),
-    ("MOVT decoded",         "[K12] MOVT match (key=0x341)"),
-    ("MOV imm decoded",      "[K12] MOV (imm) match (key=0x3A0)"),
-    ("SUB (reg) decoded",    "[K12] SUB match (key=0x050)"),
-    ("SUBS (imm) decoded",   "[K12] SUB match (key=0x250)"),
-    ("ADC (reg) decoded",    "[K12] ADC match (key=0x0B0)"),
-    ("ADC (sh reg) decoded", "[K12] ADC match (key=0x0B8)"),
-    ("MRS decoded",          "[K12] MRS match (key=0x100)"),
-    ("MVN decoded",          "[K12] MVN match (key=0x1E0)"),
+    # setup
+    ("Loaded image", "[LOAD] test_adr.bin @ 0x00008000"),
+    ("PC start",     "r15 <= 0x00008000"),
 
-    # memory effects
-    ("STR +0",               "mem[0x00100000] <= r5 (0x00000004)"),
-    ("STR +4",               "mem[0x00100004] <= r7 (0x00000000)"),
-    ("STR +8",               "mem[0x00100008] <= r5 (0x00000000)"),
-    ("STR +12",              "mem[0x0010000C] <= r7 (0x60000000)"),
-    ("STR +16",              "mem[0x00100010] <= r5 (0x80000000)"),
-    ("STR +20",              "mem[0x00100014] <= r7 (0x90000000)"),
-    ("STR +24",              "mem[0x00100018] <= r5 (0x00000000)"),
-    ("STR +28",              "mem[0x0010001C] <= r7 (0x70000000)"),
-    ("STR +32",              "mem[0x00100020] <= r5 (0x00000008)"),
-    ("STR +36",              "mem[0x00100024] <= r7 (0x00000000)"),
+    # base pointer (MOVT)
+    ("Base set",     "00008004:       E3406010"),
 
-    # halt + final state
-    ("DEADBEEF trap",        "DEADBEEF"),
-    ("Final r3==5",          "r3  = 0x00000005"),
-    ("Final r4==1",          "r4  = 0x00000001"),
-    ("Final r5==8",          "r5  = 0x00000008"),
-    ("Final r6 base",        "r6  = 0x00100000"),
-    ("Final r7==0",          "r7  = 0x00000000"),
-    ("Final PC",             "r15 = 0x000080BC"),
-    ("Final CPSR",           "CPSR = 0x00000000"),
-    ("Cycle count",          "cycle=48"),
+    # ADR-style PC-relative ops (need the exact instruction line)
+    ("ADR fwd",      "00008008:       E28F000C"),
+    ("ADR back",     "0000800C:       E24F100C"),
+
+    # prove results used (stores)
+    ("Store r0",     "0000801C:       E5860000"),
+    ("Store r1",     "00008020:       E5861004"),
+
+    # stop
+    ("BKPT",         "00008024:       E1212374"),
+
+    # final state
+    ("Final r0",     "r0  = 0x0000801C"),
+    ("Final r1",     "r1  = 0x00008008"),
+    ("Final PC",     "r15 = 0x00008024"),
+    ("Final CPSR",   "CPSR = 0x00000000"),
+    ("Cycle count",  "cycle=10"),
 ]
+
 def run_test():
     print(f"Running {TEST_NAME}...")
 

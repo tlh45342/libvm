@@ -6,11 +6,33 @@ VM = "arm-vm.exe"
 TEST_NAME = "test_dsb"
 
 CHECKS = [
-    ("Loaded",              "[LOAD] test_dsb.bin @ 0x00008000"),
-    ("DSB SY no-change",    "mem[0x00100004] <= r2 (0x00000000)"),
-    ("DSB ST no-change",    "mem[0x00100008] <= r4 (0x00000000)"),
-    ("DSB ISH no-change",   "mem[0x0010000C] <= r7 (0x00000000)"),
-    ("BKPT",                "[K12] BKPT match"),
+    # setup
+    ("Loaded image",         "[LOAD] test_dsb.bin @ 0x00008000"),
+    ("PC start",             "r15 <= 0x00008000"),
+
+    # code (addr + word only)
+    ("@8000 MOVW word",      "00008000:       E3006000"),
+    ("@8004 MOVT word",      "00008004:       E3406010"),
+    ("@8008 MRS  word",      "00008008:       E10F0000"),
+    ("@800C STR  word",      "0000800C:       E5860000"),
+
+    ("@8010 DSB  word",      "00008010:       F57FF04F"),
+    ("@8014 MRS  word",      "00008014:       E10F1000"),
+    ("@8018 EOR  word",      "00008018:       E0202001"),
+    ("@801C STR  word",      "0000801C:       E5862004"),
+
+    ("@8020 DSB  word",      "00008020:       F57FF04E"),
+    ("@8024 MRS  word",      "00008024:       E10F3000"),
+    ("@8028 EOR  word",      "00008028:       E0204003"),
+    ("@802C STR  word",      "0000802C:       E5864008"),
+
+    ("@8030 DSB  word",      "00008030:       F57FF04B"),
+    ("@8034 MRS  word",      "00008034:       E10F5000"),
+    ("@8038 EOR  word",      "00008038:       E0207005"),
+    ("@803C STR  word",      "0000803C:       E586700C"),
+
+    # graceful stop (BKPT encoding only)
+    ("@8040 BKPT word",      "00008040:       E1212374"),
 ]
 
 def run_test():

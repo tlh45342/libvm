@@ -18,7 +18,6 @@ r15 <= 0x00008000
 [TRACE] PC=0x0000800C Instr=0xE5860000
 [K12] key=0x580 op1=2 op2=24 op3=0
 [K12] STR  pre-imm match (key=0x580)
-[STR pre-inc imm] mem[0x00100000] <= r0 (0x00000000)
 00008010:       F57FF04F        dsb sy
 [TRACE] PC=0x00008010 Instr=0xF57FF04F
 [K12] key=0x574 op1=2 op2=23 op3=4
@@ -35,7 +34,6 @@ r15 <= 0x00008000
 [TRACE] PC=0x0000801C Instr=0xE5862004
 [K12] key=0x580 op1=2 op2=24 op3=0
 [K12] STR  pre-imm match (key=0x580)
-[STR pre-inc imm] mem[0x00100004] <= r2 (0x00000000)
 00008020:       F57FF04E        ldrb r15, [pc, #-78]
 [TRACE] PC=0x00008020 Instr=0xF57FF04E
 [K12] key=0x574 op1=2 op2=23 op3=4
@@ -52,7 +50,6 @@ r15 <= 0x00008000
 [TRACE] PC=0x0000802C Instr=0xE5864008
 [K12] key=0x580 op1=2 op2=24 op3=0
 [K12] STR  pre-imm match (key=0x580)
-[STR pre-inc imm] mem[0x00100008] <= r4 (0x00000000)
 00008030:       F57FF04B        ldrb r15, [pc, #-75]
 [TRACE] PC=0x00008030 Instr=0xF57FF04B
 [K12] key=0x574 op1=2 op2=23 op3=4
@@ -69,7 +66,6 @@ r15 <= 0x00008000
 [TRACE] PC=0x0000803C Instr=0xE586700C
 [K12] key=0x580 op1=2 op2=24 op3=0
 [K12] STR  pre-imm match (key=0x580)
-[STR pre-inc imm] mem[0x0010000C] <= r7 (0x00000000)
 00008040:       E1212374        .word 0xE1212374
 [TRACE] PC=0x00008040 Instr=0xE1212374
 [K12] key=0x127 op1=0 op2=18 op3=7

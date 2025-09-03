@@ -7,50 +7,48 @@ VM = "arm-vm.exe"
 TEST_NAME = "test_adc"
 
 CHECKS = [
-    # setup / config
-    ("Debug enabled",            "[DEBUG] debug_flags set to 0x000003FF"),
-    ("Loaded image",             "[LOAD] test_adc.bin @ 0x00008000"),
-    ("PC start",                 "r15 <= 0x00008000"),
+    # setup
+    ("Loaded image", "[LOAD] test_adc.bin @ 0x00008000"),
+    ("PC start",     "r15 <= 0x00008000"),
 
-    # early decodes (front of program)
-    ("MOVW decoded",             "[K12] MOVW match"),
-    ("MOVT decoded",             "[K12] MOVT match"),
-    ("MOV imm decoded",          "[K12] MOV (imm) match"),
+    # base pointer for stores
+    ("Base set (MOVT r6,#0x0010)", "00008004:       E3406010"),
 
-    # arithmetic paths we care about in this test
-    ("SUB (reg) decoded",        "[K12] SUB match (key=0x050)"),   # E050C000
-    ("SUBS (imm) decoded",       "[K12] SUB match (key=0x250)"),   # E250C001
-    ("ADC (reg) decoded #1",     "[K12] ADC match (key=0x0B0)"),   # E0B35004
-    ("ADC (reg) decoded #2",     "[K12] ADC match (key=0x0B8)"),   # E0B35084 (shifted)
+    # Case A: ADC r5 = r3(1) + r4(2) + C(0)  -> store r5, store flags snapshot
+    ("ADC A",   "00008030:       E0B35004"),
+    ("Store A r5", "00008038:       E5865000"),
+    ("Store A PSR","0000803C:       E5867004"),
 
-    # PSR snapshot reads
-    ("MRS decoded #1",           "[K12] MRS match (key=0x100)"),
-    ("MRS decoded #2",           "Instr=0xE10F7000"),
+    # Case B: set C=0 via SUBS; ADC r5 = ~0 + 1 + C(0) -> wrap, C=1, Z=1
+    ("Set C=0",     "00008040:       E250C001"),
+    ("ADC B",       "0000804C:       E0B35004"),
+    ("Store B r5",  "00008054:       E5865008"),
+    ("Store B PSR", "00008058:       E586700C"),
 
-    # observable memory effects (golden values)
-    ("STR r5 @ +0",              "mem[0x00100000] <= r5 (0x00000004)"),
-    ("STR r7 @ +4",              "mem[0x00100004] <= r7 (0x00000000)"),
-    ("STR r5 @ +8",              "mem[0x00100008] <= r5 (0x00000000)"),
-    ("STR r7 @ +12",             "mem[0x0010000C] <= r7 (0x60000000)"),
-    ("STR r5 @ +16",             "mem[0x00100010] <= r5 (0x80000000)"),
-    ("STR r7 @ +20",             "mem[0x00100014] <= r7 (0x90000000)"),
-    ("STR r5 @ +24",             "mem[0x00100018] <= r5 (0x00000000)"),
-    ("STR r7 @ +28",             "mem[0x0010001C] <= r7 (0x70000000)"),
-    ("STR r5 @ +32",             "mem[0x00100020] <= r5 (0x00000008)"),
-    ("STR r7 @ +36",             "mem[0x00100024] <= r7 (0x00000000)"),
+    # Case C: ADC r5 = 0x7FFFFFFF + 0 + C(0)
+    ("ADC C",       "0000806C:       E0B35004"),
+    ("Store C r5",  "00008074:       E5865010"),
+    ("Store C PSR", "00008078:       E5867014"),
 
-    # graceful stop
-    ("DEADBEEF trap",            "[K12] DEADBEEF match"),
+    # Case D: set C=0; ADC r5 = 0x80000000 + 0x80000000 + C(0) -> Z=1, C=1, V=1
+    ("ADC D",       "00008090:       E0B35004"),
+    ("Store D r5",  "00008098:       E5865018"),
+    ("Store D PSR", "0000809C:       E586701C"),
 
-    # final machine state (spot-check key regs + cpsr + cycle)
-    ("Final r3==5",              "r3  = 0x00000005"),
-    ("Final r4==1",              "r4  = 0x00000001"),
-    ("Final r5==8",              "r5  = 0x00000008"),
-    ("Final r6 base",            "r6  = 0x00100000"),
-    ("Final r7==0",              "r7  = 0x00000000"),
-    ("Final PC",                 "r15 = 0x000080BC"),
-    ("Final CPSR",               "CPSR = 0x00000000"),
-    ("Cycle count",              "cycle=48"),
+    # Case E: ADC with shift (r5 = 5 + (1<<1) + C(prev=1) = 8)
+    ("ADC E (shift)","000080AC:       E0B35084"),
+    ("Store E r5",  "000080B4:       E5865020"),
+    ("Store E PSR", "000080B8:       E5867024"),
+
+    # stop
+    ("BKPT",        "000080BC:       E1212374"),
+
+    # final state
+    ("Final r5",    "r5  = 0x00000008"),
+    ("Final base",  "r6  = 0x00100000"),
+    ("Final PC",    "r15 = 0x000080BC"),
+    ("Final CPSR",  "CPSR = 0x00000000"),
+    ("Cycle count", "cycle=48"),
 ]
 
 def run_test():

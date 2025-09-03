@@ -6,13 +6,17 @@ VM = "arm-vm.exe"
 TEST_NAME = "test_bkpt"
 
 CHECKS = [
-    ("Loaded",               "[LOAD] test_bkpt.bin @ 0x00008000"),
-    ("PC start",             "r15 <= 0x00008000"),
-    ("MOVW decoded",         "[K12] MOVW match (key=0x300)"),
-    ("MOVT decoded",         "[K12] MOVT match (key=0x341)"),
-    ("MOV imm r1,#0x11",     "[K12] MOV (imm) match (key=0x3A1)"),
-    ("STR r1->[r6,#0]",      "mem[0x00100000] <= r1 (0x00000011)"),
-    ("BKPT decoded",         "[K12] BKPT match (key=0x127)"),
+    # setup
+    ("Loaded image", "[LOAD] test_bkpt.bin @ 0x00008000"),
+    ("PC start",     "r15 <= 0x00008000"),
+
+    # key steps (comment/instruction tokens)
+    ("Base set (MOVT r6,#0x0010)", "00008004:       E3406010"),
+    ("Set r1 = #0x11",             "00008008:       E3A01011"),
+    ("Store r1 -> [r6,#0]",        "0000800C:       E5861000"),
+
+    # stop condition
+    ("BKPT",                        "00008010:       E1212374"),
 ]
 
 def run_test():

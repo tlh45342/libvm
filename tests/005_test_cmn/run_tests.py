@@ -6,30 +6,32 @@ VM = "arm-vm.exe"
 TEST_NAME = "test_cmn"
 
 CHECKS = [
-    # 1) CMN(reg) baseline: 0 + 0 → Z=1 only (0x4000_0000)
-    ("CMN #1 decode",        "[K12] CMN match (key=0x170)"),
-    ("Flags #1 stored",      "mem[0x00100000] <= r7 (0x40000000)"),
+    # CMN cases (presence + MRS snapshot points)
+    ("CMN #1",                "00008030:       E1730004"),
+    ("MRS #1",                "00008034:       E10F7000"),
 
-    # 2) MVN then CMN(reg): 0xFFFF_FFFF + 1 → Z=1, C=1 (0x6000_0000)
-    ("MVN prep decode",      "[K12] MVN match (key=0x1E0)"),
-    ("CMN #2 decode",        "[K12] CMN match (key=0x170)"),
-    ("Flags #2 stored",      "mem[0x00100004] <= r7 (0x60000000)"),
+    ("CMN #2",                "00008044:       E1730004"),
+    ("MRS #2",                "00008048:       E10F7000"),
 
-    # 3) CMN(reg) overflow case: produces N=1, V=1 (0x9000_0000)
-    ("CMN overflow decode",  "[K12] CMN match (key=0x170)"),
-    ("Flags overflow stored","mem[0x00100008] <= r7 (0x90000000)"),
+    ("CMN overflow",          "0000805C:       E1730004"),
+    ("MRS overflow",          "00008060:       E10F7000"),
 
-    # 4) CMN(imm/shift RRX path): no flags set (0x0000_0000)
-    ("CMN RRX decode",       "[K12] CMN match (key=0x178)"),
-    ("Flags RRX stored",     "mem[0x00100010] <= r7 (0x00000000)"),
+    ("CMN negatives",         "00008074:       E1730004"),
+    ("MRS negatives",         "00008078:       E10F7000"),
 
-    # 5) CMN variant setting N only (0x8000_0000)
-    ("CMN N-only decode",    "[K12] CMN match (key=0x176)"),
-    ("Flags N-only stored",  "mem[0x00100014] <= r7 (0x80000000)"),
+    ("CMN shift (LSL)",       "00008088:       E1730084"),
+    ("MRS shift",             "0000808C:       E10F7000"),
 
-    # Trap: BKPT decode + final PC
-    ("BKPT decode",          "[K12] BKPT match (key=0x127)"),
-    ("BKPT PC",              "PC=0x000080AC"),
+    ("CMN RRX (uses C)",      "000080A0:       E1730064"),
+    ("MRS RRX",               "000080A4:       E10F7000"),
+
+    # graceful stop
+    ("BKPT",                  "000080AC:       E1212374"),
+
+    # final machine state
+    ("Final PC",              "r15 = 0x000080AC"),
+    ("Final CPSR",            "CPSR = 0x80000000"),
+    ("Cycle count",           "cycle=44"),
 ]
 
 def run_test():

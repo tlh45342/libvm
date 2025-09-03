@@ -3,29 +3,31 @@ import os
 import sys
 
 VM = "arm-vm.exe"
-
-TEST_NAME = "test_add"
+TEST_NAME = "test_cps"
 
 CHECKS = [
-    # minimal setup
-    ("Loaded image",          "[LOAD] test_add.bin @ 0x00008000"),
+    # snapshots of CPSR before/after each CPS
+    ("MRS snap0",            "00008008:       E10F0000"),
+    ("Store snap0",          "0000800C:       E5860000"),
 
-    # disassembly anchors (comment + exact address/opcode)
-    ("DISASM 8000 MOV",       "00008000:       E3A00000"),
-    ("DISASM 8004 ADD",       "00008004:       E2801005"),
-    ("DISASM 8008 ADD",       "00008008:       E2812007"),
-    ("DISASM 800C MOV",       "0000800C:       E3A0300A"),
-    ("DISASM 8010 ADD(reg)",  "00008010:       E0824003"),   # .word in trace; ADD r4,r2,r3
-    ("DISASM 8014 MVN(imm)",  "00008014:       E3E05000"),   # .word in trace; MVN r5,#0
-    ("DISASM 8018 ADD",       "00008018:       E2856001"),
-    ("BKPT word",             "0000801C:       E1212374"),
+    ("CPSID if",             "00008010:       F10C00C0"),
+    ("MRS snap1",            "00008014:       E10F1000"),
+    ("Store snap1",          "00008018:       E5861004"),
 
-    # final machine state
-    ("Reg r4=22",             "r4  = 0x00000016"),
-    ("Reg r6=0",              "r6  = 0x00000000"),
-    ("Final PC",              "r15 = 0x0000801C"),
-    ("Final CPSR",            "CPSR = 0x00000000"),
-    ("Cycle count",           "cycle=8"),
+    ("CPSIE i",              "0000801C:       F1080080"),
+    ("MRS snap2",            "00008020:       E10F2000"),
+    ("Store snap2",          "00008024:       E5862008"),
+
+    ("CPSID a",              "00008028:       F10C0100"),
+    ("MRS snap3",            "0000802C:       E10F3000"),
+    ("Store snap3",          "00008030:       E586300C"),
+
+    ("CPSIE i, #0x13",       "00008034:       F10A0093"),
+    ("MRS snap4",            "00008038:       E10F4000"),
+    ("Store snap4",          "0000803C:       E5864010"),
+
+    # trap
+    ("BKPT",                 "00008040:       E1212374"),
 ]
 
 def run_test():

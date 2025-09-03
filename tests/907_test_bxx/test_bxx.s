@@ -148,5 +148,5 @@ _start:
 1:  TAG_TO_MEM 0x0E, 52
 2:
 
-    .word 0xDEADBEEF
+    bkpt    #0x1234
 	
