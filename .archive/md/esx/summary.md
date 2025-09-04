@@ -1,1 +1,0 @@
-hostd uses UPC

@@ -1,0 +1,38 @@
+Logging to test_blx.log
+[DEBUG] debug_flags set to 0x000003FF
+[LOAD] test_blx.bin @ 0x00008000 (32 bytes)
+r15 <= 0x00008000
+00008000:       E3A00001        mov r0, #0x1
+[TRACE] PC=0x00008000 Instr=0xE3A00001
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008004:       E59F1010        ldr r1, [pc, #+16]
+[TRACE] PC=0x00008004 Instr=0xE59F1010
+[K12] key=0x591 op1=2 op2=25 op3=1
+[K12] LDR(literal) match (key=0x591)
+[LDR lit] r1 <= [0x0000801C] => 0x00008010
+00008008:       E12FFF31        .word 0xE12FFF31
+[TRACE] PC=0x00008008 Instr=0xE12FFF31
+[K12] key=0x123 op1=0 op2=18 op3=3
+[K12] BLX (reg) match (key=0x123)
+00008010:       E2800007        add r0, r0, #0x7
+[TRACE] PC=0x00008010 Instr=0xE2800007
+[K12] key=0x280 op1=1 op2=8 op3=0
+[K12] ADD match (key=0x280)
+00008014:       E12FFF1E        .word 0xE12FFF1E
+[TRACE] PC=0x00008014 Instr=0xE12FFF1E
+[K12] key=0x121 op1=0 op2=18 op3=1
+[K12] BX (reg) match (key=0x121)
+0000800C:       EA000001        b 0x00008018
+[TRACE] PC=0x0000800C Instr=0xEA000001
+[K12] key=0xA00 op1=5 op2=0 op3=0
+[K12] B match (key=0xA00)
+00008018:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008018 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+r0  = 0x00000008  r1  = 0x00008010  r2  = 0x00000000  r3  = 0x00000000
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00000000  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x0000800C  r15 = 0x00008018
+CPSR = 0x00000000  cycle=7

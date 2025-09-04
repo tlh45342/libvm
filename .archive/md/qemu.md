@@ -1,1 +1,0 @@
-qemu-img resize disk.img +500M

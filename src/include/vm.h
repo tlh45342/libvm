@@ -38,6 +38,7 @@ bool    vm_step(VM* vm);                // Execute one instruction
 bool    vm_run(VM* vm, uint64_t max_cycles);   // 0 = run until halt
 void    vm_halt(VM* vm);
 bool    vm_is_halted(const VM* vm);
+void    vm_clear_halt(VM *vm);
 
 // ---- Memory convenience ----
 bool    vm_load_image(VM* vm, const void* data, size_t len, uint32_t addr);

@@ -1,0 +1,21 @@
+set cpu debug=ALL
+logfile test_teq.log
+version
+load test_teq.bin 0x00008000
+regs
+
+# ---- Case 1 ----
+run                 # executes until BKPT at 0x00008010
+regs                # r2=1, CPSR=0x40000000 (Z=1)
+set r15 0x00008014  # move past BKPT
+clrhalt             # clear halt flag
+# ---- Case 2 ----
+run                 # executes until BKPT at 0x00008024
+regs                # r2=2, CPSR=0x00000000 (Z=0, N=0)
+set r15 0x00008028  # move past BKPT
+clrhalt
+# ---- Case 3 ----
+run                 # executes until BKPT at 0x00008038
+regs                # r2=3, CPSR=0x80000000 (N=1)
+
+quit

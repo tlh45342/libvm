@@ -6,12 +6,18 @@
 #include <stdlib.h>   // calloc, free
 #include <errno.h>
 #include <inttypes.h>
+
 #include "vm.h"
 #include "cpu.h"
+#include "board.h"       // DTB_ADDR
+#include "dtb_blob.h"
 #include "mem.h"
 #include "disasm.h"
 #include "log.h"
 #include "debug.h"
+#include "hw_bus.h"
+#include "dev_rtc.h"     // RTC mapping helpers
+#include "dev_nvram.h"   // NVRAM mapping helpers
 
 typedef struct VM {
     CPU         cpu;
@@ -28,7 +34,26 @@ typedef struct VM {
         void    *ctx;
     } mmio[16];
     int n_mmio;
+	bool devices_inited;    // <-- add this line
 } VM;
+
+// --------- forward declarations ----------
+
+// --- device/DTB setup helpers (local to vm.c) ---
+static void vm_map_rtc(void);
+static void vm_map_nvram(void);
+static void vm_place_dtb(struct VM* vm);
+static void vm_init_devices_and_boot(struct VM* vm);
+
+// TEMP: ensure prototype is visible even if hw_bus.h is stale
+bool hw_bus_map_region(const char* name,
+                       uint32_t base,
+                       uint32_t size,
+                       uint32_t (*read32)(uint32_t addr),
+                       void (*write32)(uint32_t addr, uint32_t value));
+
+
+// ---------- helper utils? ----------
 
 // Little-endian 32-bit fetch using mem_* (keeps CPU core pure)
 static inline uint32_t vm_read_le32(uint32_t addr) {
@@ -72,6 +97,10 @@ bool vm_add_ram(VM* vm, size_t ram_size) {
 	mem_init();                        // initialize memory subsystem once
 	mem_bind(vm->ram, vm->ram_size);   // then bind the VM's RAM buffer
 
+	if (!vm->devices_inited) {
+		vm_init_devices_and_boot(vm);
+    }
+	
     // If reset ran before RAM existed, set SP now.
     if (vm->cpu.r[13] == 0) {
         vm->cpu.r[13] = (uint32_t)(vm->ram_size - 4); // SP
@@ -270,3 +299,74 @@ void vm_set_debug(VM *vm, debug_flags_t flags) {
     debug_flags = flags;  // keep CPU/handlers in sync
     // log_printf("[DEBUG] debug_flags set to 0x%08X\n", flags); // optional
 }
+
+void vm_clear_halt(VM *vm) {
+    (void)vm;          // if you don’t need it yet, silence unused
+    cpu_clear_halt();  // delegate to CPU
+}
+
+static void vm_map_rtc(void) {
+    // Initialize the device state
+    dev_rtc_init(RTC_BASE_ADDR);
+
+    // Expose it on the MMIO bus
+    hw_bus_map_region("rtc",
+                      RTC_BASE_ADDR,
+                      RTC_MMIO_SIZE,
+                      /*read32=*/dev_rtc_read32,
+                      /*write32=*/dev_rtc_write32);
+}
+
+static void vm_place_dtb(struct VM* vm) {
+    if (dtb_blob_len == 0) return;
+
+    uint32_t dst = DTB_ADDR;
+
+    // Copy DTB blob into guest memory
+    size_t i = 0;
+    for (; i + 4 <= dtb_blob_len; i += 4, dst += 4) {
+        uint32_t w =  (uint32_t)dtb_blob[i]
+                    | ((uint32_t)dtb_blob[i+1] << 8)
+                    | ((uint32_t)dtb_blob[i+2] << 16)
+                    | ((uint32_t)dtb_blob[i+3] << 24);
+        mem_write32(dst, w);
+    }
+    if (i < dtb_blob_len) {
+        // tail (<4 bytes)
+        uint32_t w = mem_read32(dst);
+        uint32_t j = 0;
+        while (i + j < dtb_blob_len) {
+            uint32_t b = (uint32_t)dtb_blob[i + j];
+            w = (w & ~(0xFFu << (8*j))) | (b << (8*j));
+            ++j;
+        }
+        mem_write32(dst, w);
+    }
+
+    // Linux/ATAGS-style boot args (r0=0, r1=arch, r2=DTB addr).
+    // If you don't have an arch ID, keep r1=0.
+    vm->cpu.r[0] = 0;
+    vm->cpu.r[1] = 0;
+    vm->cpu.r[2] = DTB_ADDR;
+}
+
+// Call once during startup, after RAM is ready and before you start executing:
+static void vm_init_devices_and_boot(struct VM* vm) {
+    static bool g_devices_inited = false;
+    if (!g_devices_inited) {
+        vm_map_rtc();
+        vm_map_nvram();
+        g_devices_inited = true;
+    }
+    // Place (or refresh) the DTB image each time RAM is (re)bound,
+    // so guest always sees a valid blob at DTB_ADDR.
+    vm_place_dtb(vm);
+}
+
+static void vm_map_nvram(void) {
+    dev_nvram_init("nvram.bin");
+    hw_bus_map_region("nvram", NVRAM_BASE_ADDR, NVRAM_MMIO_SIZE,
+                      /*read32=*/dev_nvram_read32,
+                      /*write32=*/dev_nvram_write32);
+}
+

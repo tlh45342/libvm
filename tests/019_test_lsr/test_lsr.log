@@ -1,0 +1,62 @@
+Logging to test_lsr.log
+[DEBUG] debug_flags set to 0x000003FF
+arm-vm version 0.0.131
+[LOAD] test_lsr.bin @ 0x00008000 (52 bytes)
+r15 <= 0x00008000
+00008000:       E3006000        movw r6, #0x0000
+[TRACE] PC=0x00008000 Instr=0xE3006000
+[K12] key=0x300 op1=1 op2=16 op3=0
+[K12] MOVW match (key=0x300)
+00008004:       E3406010        movt r6, #0x0010
+[TRACE] PC=0x00008004 Instr=0xE3406010
+[K12] key=0x341 op1=1 op2=20 op3=1
+[K12] MOVT match (key=0x341)
+00008008:       E3000001        movw r0, #0x0001
+[TRACE] PC=0x00008008 Instr=0xE3000001
+[K12] key=0x300 op1=1 op2=16 op3=0
+[K12] MOVW match (key=0x300)
+0000800C:       E3480000        movt r0, #0x8000
+[TRACE] PC=0x0000800C Instr=0xE3480000
+[K12] key=0x340 op1=1 op2=20 op3=0
+[K12] MOVT match (key=0x340)
+00008010:       E1B010A0        .word 0xE1B010A0
+[TRACE] PC=0x00008010 Instr=0xE1B010A0
+[K12] key=0x1BA op1=0 op2=27 op3=10
+[K12] MOV match (key=0x1BA)
+00008014:       E10F7000        .word 0xE10F7000
+[TRACE] PC=0x00008014 Instr=0xE10F7000
+[K12] key=0x100 op1=0 op2=16 op3=0
+[K12] MRS match (key=0x100)
+00008018:       E5861000        str r1, [r6, #+0]
+[TRACE] PC=0x00008018 Instr=0xE5861000
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+0000801C:       E5867004        str r7, [r6, #+4]
+[TRACE] PC=0x0000801C Instr=0xE5867004
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+00008020:       E1B02FA0        .word 0xE1B02FA0
+[TRACE] PC=0x00008020 Instr=0xE1B02FA0
+[K12] key=0x1BA op1=0 op2=27 op3=10
+[K12] MOV match (key=0x1BA)
+00008024:       E10F7000        .word 0xE10F7000
+[TRACE] PC=0x00008024 Instr=0xE10F7000
+[K12] key=0x100 op1=0 op2=16 op3=0
+[K12] MRS match (key=0x100)
+00008028:       E5862008        str r2, [r6, #+8]
+[TRACE] PC=0x00008028 Instr=0xE5862008
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+0000802C:       E586700C        str r7, [r6, #+12]
+[TRACE] PC=0x0000802C Instr=0xE586700C
+[K12] key=0x580 op1=2 op2=24 op3=0
+[K12] STR  pre-imm match (key=0x580)
+00008030:       E1212374        .word 0xE1212374
+[TRACE] PC=0x00008030 Instr=0xE1212374
+[K12] key=0x127 op1=0 op2=18 op3=7
+[K12] BKPT match (key=0x127)
+r0  = 0x80000001  r1  = 0x40000000  r2  = 0x00000001  r3  = 0x00000000
+r4  = 0x00000000  r5  = 0x00000000  r6  = 0x00100000  r7  = 0x00000000
+r8  = 0x00000000  r9  = 0x00000000  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x00008030
+CPSR = 0x00000000  cycle=13

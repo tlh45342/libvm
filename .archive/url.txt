@@ -1,7 +1,0 @@
-https://www.youtube.com/watch?v=fWUJKH0RNFE&list=PLbtzT1TYeoMhTPzyTZboW_j7TPAnjv9XB
-xv6 Kernel-1: Intro and Overview
-
-https://www.youtube.com/watch?v=Tq1j5s5fuOY
-https://github.com/sam159/uVM/blob/master/vm.c
-https://github.com/hugsy/cemu
-https://github.com/bzhxx/gwenesis

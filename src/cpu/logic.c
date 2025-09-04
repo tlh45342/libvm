@@ -1,11 +1,13 @@
 // src/cpu/logic.c
+
 #include <stdint.h>
 #include <stdbool.h>
+
 #include "cpu.h"
 #include "cpu_flags.h"
-#include "shifter.h"
 #include "cond.h"
 #include "logic.h"
+#include "operand.h"   // <-- needed for dp_operand2()
 
 // ------------------------------- ORR -------------------------------
 // Rd = Rn | op2 ; flags (N,Z,C from shifter) if S=1
@@ -302,4 +304,70 @@ void handle_sxth(uint32_t instr) {
     uint32_t Rm =  instr        & 0xFu;
     IGNORE_IF_PC(Rd);
     cpu.r[Rd] = (uint32_t)(int32_t)(int16_t)(cpu.r[Rm] & 0xFFFFu);
+}
+
+// helper (not exported, not in table)
+static inline void exec_mov_common(uint32_t instr, uint32_t Rd, int Sbit) {
+    uint32_t sh_c = cpsr_get_C();
+    uint32_t op2  = dp_operand2(instr, &sh_c);
+    cpu.r[Rd] = op2;
+    if (Sbit) {
+        cpsr_set_NZ(op2);
+        cpsr_set_C_from(sh_c & 1u);
+    }
+}
+
+// One helper for both MOV/MVN; not exported, not referenced in the table directly.
+static inline void exec_mov_or_mvn_common(uint32_t instr, uint32_t Rd, int Sbit, bool is_mvn) {
+    // Seed shifter carry-in from CPSR.C
+    uint32_t sh_c = cpsr_get_C();
+
+    // Compute Operand2; dp_operand2 updates sh_c to the shifter carry-out if defined
+    uint32_t op2  = dp_operand2(instr, &sh_c);
+    uint32_t res  = is_mvn ? ~op2 : op2;
+
+    // Special PC write semantics
+    if (Rd == 15u) {
+        if (Sbit) {
+            // MOVS/MVNS to PC => exception-return semantics (restores CPSR/SPSR etc.)
+            cpu_exception_return(res);
+        } else {
+            // MOV/MVN to PC => branch; clear T in npc alignment
+            cpu.npc = res & ~1u;
+        }
+        return;
+    }
+
+    // Normal register write
+    cpu.r[Rd] = res;
+
+    // Flag updates for S variants: N/Z from result; C from shifter carry-out
+    if (Sbit) {
+        cpsr_set_NZ(res);
+        cpsr_set_C_from(sh_c & 1u);  // keep consistent with the rest of this file
+    }
+}
+
+// MOV (data-processing form: reg/imm via dp_operand2)
+void handler_mov(uint32_t instr) {
+    // Honor condition codes (treat as NOP if condition fails)
+    uint8_t cond = (instr >> 28) & 0xF;
+    if (cond != 0xF && !evaluate_condition(cond)) return;
+
+    uint32_t Rd = (instr >> 12) & 0xF;
+    int Sbit    = (instr >> 20) & 1;
+
+    exec_mov_or_mvn_common(instr, Rd, Sbit, /*is_mvn=*/false);
+}
+
+// MVN (data-processing form)
+void handler_mvn(uint32_t instr) {
+    // Honor condition codes (treat as NOP if condition fails)
+    uint8_t cond = (instr >> 28) & 0xF;
+    if (cond != 0xF && !evaluate_condition(cond)) return;
+
+    uint32_t Rd = (instr >> 12) & 0xF;
+    int Sbit    = (instr >> 20) & 1;
+
+    exec_mov_or_mvn_common(instr, Rd, Sbit, /*is_mvn=*/true);
 }

@@ -21,6 +21,7 @@ SRCS_CORE = \
     $(SRC_DIR)/cli.c \
     $(SRC_DIR)/vm.c \
     $(SRC_DIR)/log.c \
+	$(SRC_DIR)/dtb_blob.c \
     $(SRC_DIR)/disasm.c \
     $(SRC_DIR)/wincrt.c \
     $(SRC_DIR)/disk_manager.c \
@@ -44,7 +45,10 @@ SRCS_CPU = \
 # ---- HW sources ----
 SRCS_HW = \
     $(HW_DIR)/hw_bus.c \
+	$(HW_DIR)/hw_bus_shim.c \
     $(HW_DIR)/dev_uart.c \
+	$(HW_DIR)/dev_nvram.c \
+	$(HW_DIR)/dev_rtc.c \
     $(HW_DIR)/hw_disk.c
 
 SRCS = $(SRCS_CORE) $(SRCS_CPU) $(SRCS_HW)

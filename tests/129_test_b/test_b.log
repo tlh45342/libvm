@@ -1,5 +1,5 @@
 Logging to test_b.log
-arm-vm version 0.0.129
+arm-vm version 0.0.131
 [LOAD] test_b.bin @ 0x00008000 (40 bytes)
 r15 <= 0x00008000
 00008000:       E3A00001        mov r0, #0x1

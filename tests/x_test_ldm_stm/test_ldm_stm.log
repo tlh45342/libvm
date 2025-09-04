@@ -1,0 +1,46 @@
+Logging to test_ldm_stm.log
+[DEBUG] debug_flags set to 0x000003FF
+[LOAD] test_ldm_stm.bin @ 0x00008000 (72 bytes)
+r15 <= 0x00008000
+00008000:       E59F001C        ldr r0, [pc, #+28]
+[TRACE] PC=0x00008000 Instr=0xE59F001C
+[K12] key=0x591 op1=2 op2=25 op3=1
+[K12] LDR(literal) match (key=0x591)
+[LDR lit] r0 <= [0x00008024] => 0x00008028
+00008004:       E3A04011        mov r4, #0x11
+[TRACE] PC=0x00008004 Instr=0xE3A04011
+[K12] key=0x3A1 op1=1 op2=26 op3=1
+[K12] MOV (imm) match (key=0x3A1)
+00008008:       E3A05022        mov r5, #0x22
+[TRACE] PC=0x00008008 Instr=0xE3A05022
+[K12] key=0x3A2 op1=1 op2=26 op3=2
+[K12] MOV (imm) match (key=0x3A2)
+0000800C:       E3A06033        mov r6, #0x33
+[TRACE] PC=0x0000800C Instr=0xE3A06033
+[K12] key=0x3A3 op1=1 op2=26 op3=3
+[K12] MOV (imm) match (key=0x3A3)
+00008010:       E8A00070        stmia r0!, {r4, r5, r6}
+[TRACE] PC=0x00008010 Instr=0xE8A00070
+[K12] key=0x8A7 op1=4 op2=10 op3=7
+[K12] STM match (key=0x8A7)
+00008014:       E240100C        sub r1, r0, #0xC
+[TRACE] PC=0x00008014 Instr=0xE240100C
+[K12] key=0x240 op1=1 op2=4 op3=0
+[K12] SUB match (key=0x240)
+00008018:       E8910380        ldmia r1, {r7, r8, r9}
+[TRACE] PC=0x00008018 Instr=0xE8910380
+[K12] key=0x898 op1=4 op2=9 op3=8
+[K12] LDM match (key=0x898)
+0000801C:       E1A0A000        .word 0xE1A0A000
+[TRACE] PC=0x0000801C Instr=0xE1A0A000
+[K12] key=0x1A0 op1=0 op2=26 op3=0
+[K12] MOV match (key=0x1A0)
+00008020:       DEADBEEF        .word 0xDEADBEEF
+[TRACE] PC=0x00008020 Instr=0xDEADBEEF
+[K12] key=0xEAE op1=7 op2=10 op3=14
+[K12] DEADBEEF match (key=0xEAE)
+r0  = 0x00008034  r1  = 0x00008028  r2  = 0x00000000  r3  = 0x00000000
+r4  = 0x00000011  r5  = 0x00000022  r6  = 0x00000033  r7  = 0x00000011
+r8  = 0x00000022  r9  = 0x00000033  r10 = 0x00008034  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x00008020
+CPSR = 0x00000000  cycle=9

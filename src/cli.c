@@ -107,23 +107,25 @@ typedef int (*cmd_fn)(CLI*, int argc, char **argv);   // 0=ok, -1=err, +1=quit
 typedef struct { const char *name; cmd_fn fn; const char *help; } cmd_t;
 
 // forward decls
-static int cmd_run    (CLI*, int, char**);
-static int cmd_regs   (CLI*, int, char**);
-static int cmd_load   (CLI*, int, char**);
-static int cmd_logfile(CLI*, int, char**);
-static int cmd_do     (CLI*, int, char**);
-static int cmd_quit   (CLI*, int, char**);
-static int cmd_attach (CLI*, int, char **);
-static int cmd_set    (CLI*, int, char**);
-static int cmd_step   (CLI*, int, char**);
-static int cmd_version(CLI *cli, int argc, char **argv);
-static int cmd_examine(CLI *cli, int argc, char **argv);
+static int cmd_run     (CLI*, int, char**);
+static int cmd_regs    (CLI*, int, char**);
+static int cmd_load    (CLI*, int, char**);
+static int cmd_logfile (CLI*, int, char**);
+static int cmd_do      (CLI*, int, char**);
+static int cmd_quit    (CLI*, int, char**);
+static int cmd_attach  (CLI*, int, char **);
+static int cmd_set     (CLI*, int, char**);
+static int cmd_clrhalt (CLI*, int, char**);
+static int cmd_step    (CLI*, int, char**);
+static int cmd_version (CLI *cli, int argc, char **argv);
+static int cmd_examine (CLI *cli, int argc, char **argv);
 
 static const cmd_t CMDS[] = {
     {"run",      cmd_run,     "Run until halt"},
     {"regs",     cmd_regs,    "Dump registers"},
     {"load",     cmd_load,    "load <bin> <addr>"},
 	{"e",        cmd_examine, "examine memory (e addr[-end])" },
+	{"clrhalt",  cmd_clrhalt, "clear CPU halt" },
 	{"step",     cmd_step,    "step [N] (default 1)" },
 	{"attach",   cmd_attach,  "attach disk0 <image>"},
 	{"version",  cmd_version, "show emulator version" },
@@ -134,6 +136,13 @@ static const cmd_t CMDS[] = {
 };
 
 // ---- helpers ----
+
+static int cmd_clrhalt(CLI *cli, int argc, char **argv) {
+    (void)argc; (void)argv;
+    vm_clear_halt(cli->vm);
+    log_printf("[CPU] halt cleared\n");
+    return 0;
+}
 
 static int cmd_version(CLI *cli, int argc, char **argv) {
     (void)cli; (void)argc; (void)argv;

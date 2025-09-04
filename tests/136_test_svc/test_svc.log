@@ -1,6 +1,6 @@
 Logging to test_svc.log
 [DEBUG] debug_flags set to 0x000003FF
-arm-vm version 0.0.129
+arm-vm version 0.0.131
 [LOAD] test_svc.bin @ 0x00008000 (172 bytes)
 r15 <= 0x00008000
 0x00100000: 00 00 00 00

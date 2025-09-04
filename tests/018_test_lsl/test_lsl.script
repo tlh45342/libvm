@@ -1,0 +1,16 @@
+set cpu debug=all
+logfile test_lsl.log
+version
+load test_lsl.bin 0x8000
+set r15 0x8000
+
+# step each instruction and show regs (incl CPSR) after
+step 1
+regs
+step 1
+regs
+step 1
+regs
+step 1
+regs
+quit

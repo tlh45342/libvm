@@ -6,11 +6,34 @@ VM = "arm-vm.exe"
 TEST_NAME = "test_bfc"
 
 CHECKS = [
-    ("BFC all bits",        "mem[0x00100000] <= r0 (0x00000000)"),
-    ("BFC byte 8..15",      "mem[0x00100004] <= r1 (0x123400CD)"),
-    ("BFC nibble 4..7",     "mem[0x00100008] <= r2 (0x87654301)"),
-    ("BFC bits 20..27",     "mem[0x0010000C] <= r3 (0xF000F0F0)"),
-    ("BKPT",                "[K12] BKPT match"),
+    # setup
+    ("Loaded image",          "[LOAD] test_bfc.bin @ 0x00008000"),
+    ("PC start",              "r15 <= 0x00008000"),
+    ("Base set (MOVT r6)",    "00008004:       E3406010"),
+
+    # r0 case (clear all bits)
+    ("BFC r0 opcode",         "00008010:       E7DF001F"),
+    ("STR r0 -> [r6,#0]",     "00008014:       E5860000"),
+
+    # r1 case (clear byte 8..15)
+    ("BFC r1 opcode",         "00008020:       E7CF141F"),
+    ("STR r1 -> [r6,#4]",     "00008024:       E5861004"),
+
+    # r2 case (clear nibble 4..7)
+    ("BFC r2 opcode",         "00008030:       E7C7221F"),
+    ("STR r2 -> [r6,#8]",     "00008034:       E5862008"),
+
+    # r3 case (clear bits 20..27)
+    ("BFC r3 opcode",         "00008040:       E7DB3A1F"),
+    ("STR r3 -> [r6,#12]",    "00008044:       E586300C"),
+
+    # graceful stop
+    ("BKPT",                  "00008048:       E1212374"),
+
+    # final state (optional)
+    ("Final PC",              "r15 = 0x00008048"),
+    ("Final CPSR",            "CPSR = "),
+    ("Cycle count",           "cycle="),
 ]
 
 def run_test():

@@ -4,7 +4,6 @@
 
 #include "cpu.h"
 #include "cpu_flags.h"
-#include "shifter.h"   // dp_operand2(...)
 #include "alu.h"
 #include "operand.h"   // arm_read_src_reg(...)
 

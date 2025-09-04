@@ -1,0 +1,181 @@
+Logging to test_mov.log
+arm-vm version 0.0.131
+[LOAD] test_mov.bin @ 0x00008000 (172 bytes)
+r15 <= 0x00008000
+00008000:       E3A00042        mov r0, #0x42
+[TRACE] PC=0x00008000 Instr=0xE3A00042
+[K12] key=0x3A4 op1=1 op2=26 op3=4
+[K12] MOV (imm) match (key=0x3A4)
+00008004:       E3A02081        mov r2, #0x81
+[TRACE] PC=0x00008004 Instr=0xE3A02081
+[K12] key=0x3A8 op1=1 op2=26 op3=8
+[K12] MOV (imm) match (key=0x3A8)
+00008008:       E320F000        .word 0xE320F000
+[TRACE] PC=0x00008008 Instr=0xE320F000
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] NOP match (key=0x320)
+0000800C:       E1A01000        .word 0xE1A01000
+[TRACE] PC=0x0000800C Instr=0xE1A01000
+[K12] key=0x1A0 op1=0 op2=26 op3=0
+[K12] MOV match (key=0x1A0)
+00008010:       E3A02082        mov r2, #0x82
+[TRACE] PC=0x00008010 Instr=0xE3A02082
+[K12] key=0x3A8 op1=1 op2=26 op3=8
+[K12] MOV (imm) match (key=0x3A8)
+00008014:       E320F000        .word 0xE320F000
+[TRACE] PC=0x00008014 Instr=0xE320F000
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] NOP match (key=0x320)
+00008018:       E1A03080        .word 0xE1A03080
+[TRACE] PC=0x00008018 Instr=0xE1A03080
+[K12] key=0x1A8 op1=0 op2=26 op3=8
+[K12] MOV match (key=0x1A8)
+0000801C:       E3A02083        mov r2, #0x83
+[TRACE] PC=0x0000801C Instr=0xE3A02083
+[K12] key=0x3A8 op1=1 op2=26 op3=8
+[K12] MOV (imm) match (key=0x3A8)
+00008020:       E320F000        .word 0xE320F000
+[TRACE] PC=0x00008020 Instr=0xE320F000
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] NOP match (key=0x320)
+00008024:       E328F000        .word 0xE328F000
+[TRACE] PC=0x00008024 Instr=0xE328F000
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] TEQ match (key=0x320)
+00008028:       E3B04001        movs r4, #0x1
+[TRACE] PC=0x00008028 Instr=0xE3B04001
+[K12] key=0x3B0 op1=1 op2=27 op3=0
+[K12] MOV (imm) match (key=0x3B0)
+0000802C:       E3A02084        mov r2, #0x84
+[TRACE] PC=0x0000802C Instr=0xE3A02084
+[K12] key=0x3A8 op1=1 op2=26 op3=8
+[K12] MOV (imm) match (key=0x3A8)
+00008030:       E320F000        .word 0xE320F000
+[TRACE] PC=0x00008030 Instr=0xE320F000
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] NOP match (key=0x320)
+00008034:       E328F202        .word 0xE328F202
+[TRACE] PC=0x00008034 Instr=0xE328F202
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] TEQ match (key=0x320)
+00008038:       E3B04001        movs r4, #0x1
+[TRACE] PC=0x00008038 Instr=0xE3B04001
+[K12] key=0x3B0 op1=1 op2=27 op3=0
+[K12] MOV (imm) match (key=0x3B0)
+0000803C:       E3A02085        mov r2, #0x85
+[TRACE] PC=0x0000803C Instr=0xE3A02085
+[K12] key=0x3A8 op1=1 op2=26 op3=8
+[K12] MOV (imm) match (key=0x3A8)
+00008040:       E320F000        .word 0xE320F000
+[TRACE] PC=0x00008040 Instr=0xE320F000
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] NOP match (key=0x320)
+00008044:       E3A00080        mov r0, #0x80
+[TRACE] PC=0x00008044 Instr=0xE3A00080
+[K12] key=0x3A8 op1=1 op2=26 op3=8
+[K12] MOV (imm) match (key=0x3A8)
+00008048:       E1A00C00        .word 0xE1A00C00
+[TRACE] PC=0x00008048 Instr=0xE1A00C00
+[K12] key=0x1A0 op1=0 op2=26 op3=0
+[K12] MOV match (key=0x1A0)
+0000804C:       E1B05F80        .word 0xE1B05F80
+[TRACE] PC=0x0000804C Instr=0xE1B05F80
+[K12] key=0x1B8 op1=0 op2=27 op3=8
+[K12] MOV match (key=0x1B8)
+00008050:       E3A02086        mov r2, #0x86
+[TRACE] PC=0x00008050 Instr=0xE3A02086
+[K12] key=0x3A8 op1=1 op2=26 op3=8
+[K12] MOV (imm) match (key=0x3A8)
+00008054:       E320F000        .word 0xE320F000
+[TRACE] PC=0x00008054 Instr=0xE320F000
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] NOP match (key=0x320)
+00008058:       E3A00001        mov r0, #0x1
+[TRACE] PC=0x00008058 Instr=0xE3A00001
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+0000805C:       E1B060A0        .word 0xE1B060A0
+[TRACE] PC=0x0000805C Instr=0xE1B060A0
+[K12] key=0x1BA op1=0 op2=27 op3=10
+[K12] MOV match (key=0x1BA)
+00008060:       E3A02087        mov r2, #0x87
+[TRACE] PC=0x00008060 Instr=0xE3A02087
+[K12] key=0x3A8 op1=1 op2=26 op3=8
+[K12] MOV (imm) match (key=0x3A8)
+00008064:       E320F000        .word 0xE320F000
+[TRACE] PC=0x00008064 Instr=0xE320F000
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] NOP match (key=0x320)
+00008068:       E328F202        .word 0xE328F202
+[TRACE] PC=0x00008068 Instr=0xE328F202
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] TEQ match (key=0x320)
+0000806C:       E3A00001        mov r0, #0x1
+[TRACE] PC=0x0000806C Instr=0xE3A00001
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008070:       E1B07060        .word 0xE1B07060
+[TRACE] PC=0x00008070 Instr=0xE1B07060
+[K12] key=0x1B6 op1=0 op2=27 op3=6
+[K12] MOV match (key=0x1B6)
+00008074:       E3A02088        mov r2, #0x88
+[TRACE] PC=0x00008074 Instr=0xE3A02088
+[K12] key=0x3A8 op1=1 op2=26 op3=8
+[K12] MOV (imm) match (key=0x3A8)
+00008078:       E320F000        .word 0xE320F000
+[TRACE] PC=0x00008078 Instr=0xE320F000
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] NOP match (key=0x320)
+0000807C:       E3A00001        mov r0, #0x1
+[TRACE] PC=0x0000807C Instr=0xE3A00001
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008080:       E3A01001        mov r1, #0x1
+[TRACE] PC=0x00008080 Instr=0xE3A01001
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+00008084:       E1B08110        .word 0xE1B08110
+[TRACE] PC=0x00008084 Instr=0xE1B08110
+[K12] key=0x1B1 op1=0 op2=27 op3=1
+[K12] LSL (reg) match (key=0x1B1)
+00008088:       E3A02089        mov r2, #0x89
+[TRACE] PC=0x00008088 Instr=0xE3A02089
+[K12] key=0x3A8 op1=1 op2=26 op3=8
+[K12] MOV (imm) match (key=0x3A8)
+0000808C:       E320F000        .word 0xE320F000
+[TRACE] PC=0x0000808C Instr=0xE320F000
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] NOP match (key=0x320)
+00008090:       E328F202        .word 0xE328F202
+[TRACE] PC=0x00008090 Instr=0xE328F202
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] TEQ match (key=0x320)
+00008094:       E3A00055        mov r0, #0x55
+[TRACE] PC=0x00008094 Instr=0xE3A00055
+[K12] key=0x3A5 op1=1 op2=26 op3=5
+[K12] MOV (imm) match (key=0x3A5)
+00008098:       E3A01000        mov r1, #0x0
+[TRACE] PC=0x00008098 Instr=0xE3A01000
+[K12] key=0x3A0 op1=1 op2=26 op3=0
+[K12] MOV (imm) match (key=0x3A0)
+0000809C:       E1B09110        .word 0xE1B09110
+[TRACE] PC=0x0000809C Instr=0xE1B09110
+[K12] key=0x1B1 op1=0 op2=27 op3=1
+[K12] LSL (reg) match (key=0x1B1)
+000080A0:       E3A0208A        mov r2, #0x8A
+[TRACE] PC=0x000080A0 Instr=0xE3A0208A
+[K12] key=0x3A8 op1=1 op2=26 op3=8
+[K12] MOV (imm) match (key=0x3A8)
+000080A4:       E320F000        .word 0xE320F000
+[TRACE] PC=0x000080A4 Instr=0xE320F000
+[K12] key=0x320 op1=1 op2=18 op3=0
+[K12] NOP match (key=0x320)
+000080A8:       E1200070        .word 0xE1200070
+[TRACE] PC=0x000080A8 Instr=0xE1200070
+[K12] key=0x127 op1=0 op2=18 op3=7
+[K12] BKPT match (key=0x127)
+r0  = 0x00000055  r1  = 0x00000000  r2  = 0x0000008A  r3  = 0x00000084
+r4  = 0x00000001  r5  = 0x00000000  r6  = 0x00000000  r7  = 0x00000000
+r8  = 0x00000002  r9  = 0x00000055  r10 = 0x00000000  r11 = 0x00000000
+r12 = 0x00000000  r13 = 0x1FFFFFFC  r14 = 0x00000000  r15 = 0x000080A8
+CPSR = 0x00000000  cycle=43

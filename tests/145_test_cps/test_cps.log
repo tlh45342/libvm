@@ -1,5 +1,5 @@
 Logging to test_cps.log
-arm-vm version 0.0.129
+arm-vm version 0.0.131
 [LOAD] test_cps.bin @ 0x00008000 (68 bytes)
 r15 <= 0x00008000
 00008000:       E3006000        movw r6, #0x0000

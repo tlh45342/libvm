@@ -9,7 +9,6 @@
 #include "cpu.h"      // extern CPU cpu; extern debug_flags_t debug_flags;
 #include "log.h"      // log_printf
 #include "cond.h"     // evaluate_condition()
-#include "shifter.h"  // helpers if handlers need them
 
 // Handlers (existing headers in your tree)
 #include "alu.h"
@@ -42,152 +41,123 @@ typedef struct {
 
 // -------------------- seed rules (order not critical; priority is) --------------------
 static const k12_entry K12_TABLE[] = {
-	// --- Bitfield Clear (BFC), A32 --- (already added, shown for context)
-	{ 0x0FFFu, 0x07D1u, 0x0FE3C1FFu, 0x07C3001Fu, true, handle_bfc, "BFC" },
-	{ 0x0FFFu, 0x07C1u, 0x0FE3C1FFu, 0x07C3001Fu, true, handle_bfc, "BFC" },
 
-	// --- Bitfield Insert (BFI), A32 ---
-	{ 0x0FFFu, 0x07C1u, 0x0FE00070u, 0x07C00010u, true, handle_bfi, "BFI" },
-	{ 0x0FFFu, 0x07D1u, 0x0FE00070u, 0x07C00010u, true, handle_bfi, "BFI" },
+    // --- Bitfield Clear (BFC), A32 ---
+    { 0x0FFFu, 0x07D1u, 0x0FE3C1FFu, 0x07C3001Fu, true, handle_bfc, "BFC" },
+    { 0x0FFFu, 0x07C1u, 0x0FE3C1FFu, 0x07C3001Fu, true, handle_bfc, "BFC" },
 
-	// BEFORE CMN
-	{ 0x0FFFu, 0x0161u, 0x0FFF0FF0u, 0x016F0F10u, true, handle_clz, "CLZ" },
+    // --- Bitfield Insert (BFI), A32 ---
+    { 0x0FFFu, 0x07C1u, 0x0FE00070u, 0x07C00010u, true, handle_bfi, "BFI" },
+    { 0x0FFFu, 0x07D1u, 0x0FE00070u, 0x07C00010u, true, handle_bfi, "BFI" },
 
-	// Key12 for these words shows up as 0x574 in your logs; we use a tight 32-bit mask
-	{ 0x0FFFu, 0x0574u, 0x0FFF0FF0u, 0x057F0040u, false, handle_dsb, "DSB" }, // F57FF04x
-	{ 0x0FFFu, 0x0575u, 0x0FFF0FF0u, 0x057F0050u, false, handle_dmb, "DMB" }, // F57FF05x
-	{ 0x0FFFu, 0x0576u, 0x0FFF0FF0u, 0x057F0060u, false, handle_isb, "ISB" }, // F57FF06x
+    // BEFORE CMN
+    { 0x0FFFu, 0x0161u, 0x0FFF0FF0u, 0x016F0F10u, true, handle_clz, "CLZ" },
 
-	// LDR (literal): I=0,P=1,W=0,L=1 and Rn=PC (r15)
-	// xmask  = (I|P|W|L|Rn) = 0x02000000|0x01000000|0x00200000|0x00100000|0x000F0000 = 0x033F0000
-	// xvalue = (   0|  1   |   0   |  1   |   0xF   ) = 0x011F0000
-	{ 0x0F50u, 0x0510u, 0x033F0000u, 0x011F0000u, true, handle_ldr_literal, "LDR(literal)" },
+    // Key12 for these words shows up as 0x574 in your logs
+    { 0x0FFFu, 0x0574u, 0x0FFF0FF0u, 0x057F0040u, false, handle_dsb, "DSB" }, // F57FF04x
+    { 0x0FFFu, 0x0575u, 0x0FFF0FF0u, 0x057F0050u, false, handle_dmb, "DMB" }, // F57FF05x
+    { 0x0FFFu, 0x0576u, 0x0FFF0FF0u, 0x057F0060u, false, handle_isb, "ISB" }, // F57FF06x
 
-	// BKPT (ARM state): cond fixed to AL, opcode pattern 0xE1200070 with 12-bit imm
-	{ 0x0FFFu, 0x0127u, 0x0FF000F0u, 0x01200070u, false, handle_bkpt, "BKPT" },
+    // LDR (literal)
+    { 0x0F50u, 0x0510u, 0x033F0000u, 0x011F0000u, true, handle_ldr_literal, "LDR(literal)" },
 
-	{ 0x0F00u, 0x0100u, 0xFF00F000u, 0xF1000000u, true, handle_cps, "CPS" },
+    // BKPT
+    { 0x0FFFu, 0x0127u, 0x0FF000F0u, 0x01200070u, false, handle_bkpt, "BKPT" },
 
-	// MSR (register -> CPSR fields): instr & 0x0FBF0FFF == 0x0120F000
-	{ 0x0FFFu, 0x0120u, 0x0FBF0FFFu, 0x0120F000u, true, handle_msr, "MSR reg->CPSR" },
+    { 0x0F00u, 0x0100u, 0xFF00F000u, 0xF1000000u, true, handle_cps, "CPS" },
 
-	// MSR (immediate -> CPSR fields): instr & 0x0FBF0F00 == 0x0320F000
-	{ 0x0FFFu, 0x0320u, 0x0FBF0F00u, 0x0320F000u, true, handle_msr, "MSR imm->CPSR" },
+    // MSR
+    { 0x0FFFu, 0x0120u, 0x0FBF0FFFu, 0x0120F000u, true, handle_msr, "MSR reg->CPSR" },
+    { 0x0FFFu, 0x0320u, 0x0FBF0F00u, 0x0320F000u, true, handle_msr, "MSR imm->CPSR" },
 
-	// BLX (immediate) — unconditional, match top bits FAxxxxxx
-	{ 0x0E00u, 0x0A00u, 0xFE000000u, 0xFA000000u, false, handle_blx_imm, "BLX (imm)" },
+    // BLX (imm)
+    { 0x0E00u, 0x0A00u, 0xFE000000u, 0xFA000000u, false, handle_blx_imm, "BLX (imm)" },
 
-	// MUL/MLA — 000000 A S Rd Rn Rs 1001 Rm
-	// Distinguish with xmask: include 27..22, 21(A), 7..4; and for MUL also Rn==0000
-	{ 0x0E0Fu, 0x0009u, 0x0FEF00F0u, 0x00000090u, true, handle_mul, "MUL" }, // A=0, Rn=0000
-	{ 0x0E0Fu, 0x0009u, 0x0FE000F0u, 0x00200090u, true, handle_mla, "MLA" }, // A=1
+    // MUL / MLA
+    { 0x0E0Fu, 0x0009u, 0x0FEF00F0u, 0x00000090u, true, handle_mul, "MUL" }, // A=0, Rn=0000
+    { 0x0E0Fu, 0x0009u, 0x0FE000F0u, 0x00200090u, true, handle_mla, "MLA" }, // A=1
 
-	// PUSH  == STMDB sp!, {reglist}   (cond | 1001 | 0010 | 1101 | reglist)
-	{ 0x0F10u, 0x0800u, 0x0FFF0000u, 0x092D0000u, true, handle_stm, "PUSH (STMDB sp!)" },
+    // PUSH / POP
+    { 0x0F10u, 0x0800u, 0x0FFF0000u, 0x092D0000u, true, handle_stm, "PUSH (STMDB sp!)" },
+    { 0x0F10u, 0x0810u, 0x0FFF0000u, 0x08BD0000u, true, handle_ldm, "POP (LDMIA sp!)" },
 
-	// POP   == LDMIA sp!, {reglist}   (cond | 1000 | 1011 | 1101 | reglist)
-	{ 0x0F10u, 0x0810u, 0x0FFF0000u, 0x08BD0000u, true, handle_ldm, "POP (LDMIA sp!)" },
+    // LDM / STM generic
+    { 0x0E10u, 0x0810u, 0, 0, true, handle_ldm, "LDM" },
+    { 0x0E10u, 0x0800u, 0, 0, true, handle_stm, "STM" },
 
-	// LDM/STM — op1=0b100; disambiguate with L bit (bit20 contained in key12’s op2)
-	// Mask op1 plus L bit in op2 (5-bit field)
-	// NEW (mask op1 and the L bit only; ignore P)
-	{ 0x0E10u, 0x0810u, 0, 0, true, handle_ldm, "LDM" },
-	{ 0x0E10u, 0x0800u, 0, 0, true, handle_stm, "STM" },
+    // Halfword / signed load/store
+    { 0x0E0Fu, 0x000Bu, 0x00500000u, 0x00400000u, true, handle_strh,  "STRH(imm)" },
+    { 0x0E0Fu, 0x000Bu, 0x00500000u, 0x00000000u, true, handle_strh,  "STRH(reg)" },
+    { 0x0E0Fu, 0x000Bu, 0x00500000u, 0x00100000u, true, handle_ldrh,  "LDRH"      },
+    { 0x0E0Fu, 0x000Du, 0x00100000u, 0x00100000u, true, handle_ldrsb, "LDRSB"     },
+    { 0x0E0Fu, 0x000Fu, 0x00100000u, 0x00100000u, true, handle_ldrsh, "LDRSH"     },
 
-	// Extra load/store halfword/signed — op3 nibble disambiguates:
-	// 0xB = halfword, 0xD = signed byte, 0xF = signed half
-	// xmask32 0x00500000 tests I(22) and L(20) simultaneously.
-	// STRH (imm): I=1,L=0 ; STRH (reg): I=0,L=0
-	{ 0x0E0Fu, 0x000Bu, 0x00500000u, 0x00400000u, true, handle_strh,  "STRH(imm)" },
-	{ 0x0E0Fu, 0x000Bu, 0x00500000u, 0x00000000u, true, handle_strh,  "STRH(reg)" },
+    // BX / BLX (reg)
+    { 0x0FFFu, 0x0121u, 0x0FFFFFF0u, 0x012FFF10u, true, handle_bx,      "BX (reg)"  },
+    { 0x0FFFu, 0x0123u, 0x0FFFFFF0u, 0x012FFF30u, true, handle_blx_reg, "BLX (reg)" },
 
-	// LDRH (imm/reg): I=?, L=1
-	{ 0x0E0Fu, 0x000Bu, 0x00500000u, 0x00100000u, true, handle_ldrh,  "LDRH"      },
+	{ 0x0DE0u, 0x01A0u, 0, 0, true, handle_mov, "MOV" }, // DP MOV (reg or reg-shift via dp_operand2)
 
-	// LDRSB
-	{ 0x0E0Fu, 0x000Du, 0x00100000u, 0x00100000u, true, handle_ldrsb, "LDRSB"     },
-
-	// LDRSH
-	{ 0x0E0Fu, 0x000Fu, 0x00100000u, 0x00100000u, true, handle_ldrsh, "LDRSH"     },
-
-	// BX / BLX(reg) patterns (A32)
-	// key12(BX  Rm) = 0x0121 ; instr & 0x0FFFFFF0 == 0x012FFF10
-	// key12(BLX Rm) = 0x0123 ; instr & 0x0FFFFFF0 == 0x012FFF30
-	{ 0x0FFFu, 0x0121u, 0x0FFFFFF0u, 0x012FFF10u, true, handle_bx,      "BX (reg)"  },
-	{ 0x0FFFu, 0x0123u, 0x0FFFFFF0u, 0x012FFF30u, true, handle_blx_reg, "BLX (reg)" },
-
-    // ---- Wide moves (exact patterns) ----
+    // MOVW / MOVT
     { 0x0F00u, 0x0300u, 0x0FF00000u, 0x03000000u, true, handle_movw, "MOVW" },
     { 0x0F00u, 0x0300u, 0x0FF00000u, 0x03400000u, true, handle_movt, "MOVT" },
 
-// STR (word) reg-offset (I=1,B=0,L=0, bit4==0)
-{ 0x0E50u, 0x0600u, 0, 0, true, handle_str_regoffset,  "STR reg-offset" },
+	// Shift by register (aliases of MOV) — ignore S (bit20)
+	{ 0x0FE0u, 0x01A0u, 0x0FE000F0u, 0x01A00010u, true, handle_mov, "LSL (reg)" },
+	{ 0x0FE0u, 0x01A0u, 0x0FE000F0u, 0x01A00030u, true, handle_mov, "LSR (reg)" },
+	{ 0x0FE0u, 0x01A0u, 0x0FE000F0u, 0x01A00050u, true, handle_mov, "ASR (reg)" },
+	{ 0x0FE0u, 0x01A0u, 0x0FE000F0u, 0x01A00070u, true, handle_mov, "ROR (reg)" },
 
-// STRB reg-offset with imm shift (mirror LDRB split)
-{ 0x0F7Fu, 0x0740u, 0, 0, true, handle_strb_reg_shift, "STRB reg LSL#0" },
-{ 0x0F71u, 0x0740u, 0, 0, true, handle_strb_reg_shift, "STRB reg imm-shift" },
+    // STR / STRB reg offset
+    { 0x0E50u, 0x0600u, 0, 0, true, handle_str_regoffset,  "STR reg-offset" },
+    { 0x0F7Fu, 0x0740u, 0, 0, true, handle_strb_reg_shift, "STRB reg LSL#0" },
+    { 0x0F71u, 0x0740u, 0, 0, true, handle_strb_reg_shift, "STRB reg imm-shift" },
 
-// SWP / SWPB: (instr & 0x0FB00FF0) == 0x01000090 (word) / 0x01400090 (byte)
-{ 0x0E0Fu, 0x0009u, 0x0FB00FF0u, 0x01000090u, true, handle_swp,  "SWP"  },
-{ 0x0E0Fu, 0x0009u, 0x0FB00FF0u, 0x01400090u, true, handle_swpb, "SWPB" },
+    // SWP / SWPB
+    { 0x0E0Fu, 0x0009u, 0x0FB00FF0u, 0x01000090u, true, handle_swp,  "SWP"  },
+    { 0x0E0Fu, 0x0009u, 0x0FB00FF0u, 0x01400090u, true, handle_swpb, "SWPB" },
 
-// MRS (CPSR) already present:
-// { 0x0FBFu, 0x0100u, 0x0FBF0FFFu, 0x010F0000u, true,  handle_mrs, "MRS" },
+    // MRS / MSR (SPSR variants)
+    { 0x0FBFu, 0x0100u, 0x0FBF0FFFu, 0x014F0000u, true, handle_mrs, "MRS (SPSR)" },
+    { 0x0FFFu, 0x0120u, 0x0FBF0FFFu, 0x0160F000u, true, handle_msr, "MSR reg->SPSR" },
+    { 0x0FFFu, 0x0320u, 0x0FBF0F00u, 0x0360F000u, true, handle_msr, "MSR imm->SPSR" },
 
-// MRS (SPSR)
-{ 0x0FBFu, 0x0100u, 0x0FBF0FFFu, 0x014F0000u, true,  handle_mrs, "MRS (SPSR)" },
+    // Doubleword transfers
+    { 0x0E0Fu, 0x000Du, 0x00400000u, 0x00400000u, true, exec_ldrd_imm, "LDRD(imm)" },
+    { 0x0E0Fu, 0x000Du, 0x00400000u, 0x00000000u, true, exec_ldrd_reg, "LDRD(reg)" },
+    { 0x0E0Fu, 0x000Fu, 0x00400000u, 0x00400000u, true, exec_strd_imm, "STRD(imm)" },
+    { 0x0E0Fu, 0x000Fu, 0x00400000u, 0x00000000u, true, exec_strd_reg, "STRD(reg)" },
 
-// MSR reg->CPSR already present:
-// { 0x0FFFu, 0x0120u, 0x0FBF0FFFu, 0x0120F000u, true, handle_msr, "MSR reg->CPSR" },
-// MSR imm->CPSR already present:
-// { 0x0FFFu, 0x0320u, 0x0FBF0F00u, 0x0320F000u, true, handle_msr, "MSR imm->CPSR" },
-
-// MSR reg->SPSR  (same handler; xvalue has bit22 set)
-{ 0x0FFFu, 0x0120u, 0x0FBF0FFFu, 0x0160F000u, true, handle_msr, "MSR reg->SPSR" },
-
-// MSR imm->SPSR
-{ 0x0FFFu, 0x0320u, 0x0FBF0F00u, 0x0360F000u, true, handle_msr, "MSR imm->SPSR" },
-
-
-    // ---- Doubleword transfers (final: correct for your toolchain) ----
-    // key12 gate: op1==0 (bits 27..25) AND op3==0xD/0xF (bits 7..4)
-    // xmask32: split imm vs reg by bit22 (0x0040_0000)
-    { 0x0E0Fu, 0x000Du, 0x00400000u, 0x00400000u, true, exec_ldrd_imm, "LDRD(imm)" }, // op3=D?, imm (bit22=1)
-    { 0x0E0Fu, 0x000Du, 0x00400000u, 0x00000000u, true, exec_ldrd_reg, "LDRD(reg)" }, // op3=D?, reg (bit22=0)
-    { 0x0E0Fu, 0x000Fu, 0x00400000u, 0x00400000u, true, exec_strd_imm, "STRD(imm)" }, // op3=F?, imm (bit22=1)
-    { 0x0E0Fu, 0x000Fu, 0x00400000u, 0x00000000u, true, exec_strd_reg, "STRD(reg)" }, // op3=F?, reg (bit22=0)
-
-    // ---- DP (register) class (I,S ignored in mask) ----
+    // ---- DP (register) class ----
     { 0x0DE0u, 0x0000u, 0, 0, true, handle_and, "AND" },
     { 0x0DE0u, 0x0020u, 0, 0, true, handle_eor, "EOR" },
+    { 0x0DE0u, 0x0100u, 0, 0, true, handle_tst, "TST" },
+    { 0x0DE0u, 0x0120u, 0, 0, true, handle_teq, "TEQ" },
+    { 0x0DE0u, 0x0140u, 0, 0, true, handle_cmp, "CMP" },
+    { 0x0DE0u, 0x0160u, 0, 0, true, handle_cmn, "CMN" },
     { 0x0DE0u, 0x0040u, 0, 0, true, handle_sub, "SUB" },
     { 0x0DE0u, 0x0060u, 0, 0, true, handle_rsb, "RSB" },
     { 0x0DE0u, 0x0080u, 0, 0, true, handle_add, "ADD" },
     { 0x0DE0u, 0x00A0u, 0, 0, true, handle_adc, "ADC" },
     { 0x0DE0u, 0x00C0u, 0, 0, true, handle_sbc, "SBC" },
     { 0x0DE0u, 0x00E0u, 0, 0, true, handle_rsc, "RSC" },
-    { 0x0DE0u, 0x0100u, 0, 0, true, handle_tst, "TST" },
-    { 0x0DE0u, 0x0120u, 0, 0, true, handle_teq, "TEQ" },
-    { 0x0DE0u, 0x0140u, 0, 0, true, handle_cmp, "CMP" },
-    { 0x0DE0u, 0x0160u, 0, 0, true, handle_cmn, "CMN" },
     { 0x0DE0u, 0x0180u, 0, 0, true, handle_orr, "ORR" },
-    { 0x0DE0u, 0x01A0u, 0, 0, true, handle_mov_dp, "MOV" }, // DP MOV
     { 0x0DE0u, 0x01C0u, 0, 0, true, handle_bic, "BIC" },
     { 0x0DE0u, 0x01E0u, 0, 0, true, handle_mvn, "MVN" },
 
-    // ---- DP (immediate) class (I=1) ----
-    { 0x0FE0u, 0x0200u, 0, 0, true, handle_and,     "AND (imm)" },
+    // ---- DP (immediate) class ----
+    { 0x0FE0u, 0x0200u, 0, 0, true, handle_and, "AND (imm)" },
     { 0x0FE0u, 0x0310u, 0, 0, true, handle_tst_imm, "TST (imm)" },
-    { 0x0FE0u, 0x0350u, 0, 0, true, handle_cmp_imm, "CMP (imm)" }, // 0x35x
-    { 0x0FE0u, 0x0330u, 0, 0, true, handle_teq,     "TEQ (imm)" },
-    { 0x0FE0u, 0x0370u, 0, 0, true, handle_cmn,     "CMN (imm)" },
-    { 0x0FE0u, 0x0380u, 0, 0, true, handle_orr,     "ORR (imm)" },
-    { 0x0FE0u, 0x03A0u, 0, 0, true, handle_mov_imm, "MOV (imm)" },
-    { 0x0FE0u, 0x03C0u, 0, 0, true, handle_bic,     "BIC (imm)" },
-    { 0x0FE0u, 0x03E0u, 0, 0, true, handle_mvn,     "MVN (imm)" },
+    { 0x0FE0u, 0x0330u, 0, 0, true, handle_teq, "TEQ (imm)" },
+    { 0x0FE0u, 0x0350u, 0, 0, true, handle_cmp_imm, "CMP (imm)" },
+    { 0x0FE0u, 0x0370u, 0, 0, true, handle_cmn, "CMN (imm)" },
+    { 0x0FE0u, 0x0380u, 0, 0, true, handle_orr, "ORR (imm)" },
+    { 0x0FE0u, 0x03A0u, 0, 0, true, handle_mov, "MOV (imm)" },
+    { 0x0FE0u, 0x03C0u, 0, 0, true, handle_bic, "BIC (imm)" },
+    { 0x0FE0u, 0x03E0u, 0, 0, true, handle_mvn, "MVN (imm)" },
 
     // ---- Single data transfer ----
-	{ 0x0F50u, 0x0510u, 0, 0, true, handle_ldr_preimm,   "LDR  pre-imm" },
+    { 0x0F50u, 0x0510u, 0, 0, true, handle_ldr_preimm,   "LDR  pre-imm" },
     { 0x0F50u, 0x0500u, 0, 0, true, handle_str_preimm,   "STR  pre-imm" },
     { 0x0F50u, 0x0540u, 0, 0, true, handle_strb_preimm,  "STRB pre-imm" },
     { 0x0F50u, 0x0550u, 0, 0, true, handle_ldrb_preimm,  "LDRB pre-imm" },
@@ -198,26 +168,25 @@ static const k12_entry K12_TABLE[] = {
     { 0x0F70u, 0x0470u, 0, 0, true, handle_ldrb_postimm, "LDRB post-imm W"}, // W=1
     { 0x0E50u, 0x0610u, 0, 0, true, handle_ldr_regoffset,"LDR reg-offset" },
 
-	// Multiply-Long: cond | 00001 | U | A | S | RdHi | RdLo | Rs | 1001 | Rm
-	// xmask fixes 27..23 and 7..4, and U/A; S is don't-care.
-	{ 0x0E0Fu, 0x0009u, 0x0FE000F0u, 0x00800090u, true, handle_umull, "UMULL" }, // U=0 A=0
-	{ 0x0E0Fu, 0x0009u, 0x0FE000F0u, 0x00A00090u, true, handle_umlal, "UMLAL" }, // U=0 A=1
-	{ 0x0E0Fu, 0x0009u, 0x0FE000F0u, 0x00C00090u, true, handle_smull, "SMULL" }, // U=1 A=0
-	{ 0x0E0Fu, 0x0009u, 0x0FE000F0u, 0x00E00090u, true, handle_smlal, "SMLAL" }, // U=1 A=1
+    // Multiply-long
+    { 0x0E0Fu, 0x0009u, 0x0FE000F0u, 0x00800090u, true, handle_umull, "UMULL" },
+    { 0x0E0Fu, 0x0009u, 0x0FE000F0u, 0x00A00090u, true, handle_umlal, "UMLAL" },
+    { 0x0E0Fu, 0x0009u, 0x0FE000F0u, 0x00C00090u, true, handle_smull, "SMULL" },
+    { 0x0E0Fu, 0x0009u, 0x0FE000F0u, 0x00E00090u, true, handle_smlal, "SMLAL" },
 
-    // ---- LDRB (register) split ----
+    // LDRB (register) split
     { 0x0F7Fu, 0x0750u, 0, 0, true, handle_ldrb_reg,       "LDRB reg pre LSL#0" },
     { 0x0F71u, 0x0750u, 0, 0, true, handle_ldrb_reg_shift, "LDRB reg imm-shift" },
 
-    // ---- Stack-ish specials ----
+    // Stack-ish specials
     { 0x0FF0u, 0x0520u, 0x000F0000u, 0x000D0000u, true, handle_str_predec, "STR(pre-dec SP,imm)" },
     { 0x0FFFu, 0x0490u, 0x0FFFF000u, 0x049DF000u, true, handle_pop_pc,     "POP{..,pc}" },
 
-    // ---- Branch family ----
+    // Branch family
     { 0x0F00u, 0x0A00u, 0, 0, true, handle_b,  "B"  },
     { 0x0F00u, 0x0B00u, 0, 0, true, handle_bl, "BL" },
-
-    // ---- System / exact 32-bit patterns ----
+	
+ // ---- System / exact 32-bit patterns ----
     { 0x0F00u, 0x0F00u, 0x0F000000u, 0x0F000000u, true,  handle_svc, "SVC" },
     { 0x0FBFu, 0x0100u, 0x0FBF0FFFu, 0x010F0000u, true,  handle_mrs, "MRS" },
     { 0x0FFFu, 0x0320u, 0xFFFFFFFFu, 0xE320F000u, false, handle_nop, "NOP" },
@@ -226,7 +195,6 @@ static const k12_entry K12_TABLE[] = {
     // ---- Easter egg / halt ----
     { 0x0FFFu, 0x0EAEu, 0xFFFFFFFFu, 0xDEADBEEFu, false, handle_deadbeef, "DEADBEEF" },
 };
-
 
 // -------------------- 4096 per-key candidate lists --------------------
 #define KEY12_SPACE 4096

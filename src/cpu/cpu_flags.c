@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include "cpu.h"
 #include "cpu_flags.h"  // cpsr_set_NZ, cpsr_set_C_from, cpsr_get_C, is_user_mode
-#include "shifter.h"    // dp_operand2
 #include "log.h"
 #include "cpu_flags.h"
 
